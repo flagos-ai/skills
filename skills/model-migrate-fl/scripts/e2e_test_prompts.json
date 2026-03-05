@@ -1,0 +1,161 @@
+{
+  "text": [
+    {
+      "id": "t1",
+      "category": "factual",
+      "messages": [
+        {
+          "role": "user",
+          "content": "What is the capital of France? Answer in one sentence."
+        }
+      ]
+    },
+    {
+      "id": "t2",
+      "category": "chinese",
+      "messages": [
+        {
+          "role": "user",
+          "content": "请用中文解释什么是大语言模型，不超过100字。"
+        }
+      ]
+    },
+    {
+      "id": "t3",
+      "category": "coding",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Write a Python function to check if a number is prime. Only output the code, no explanation."
+        }
+      ]
+    },
+    {
+      "id": "t4",
+      "category": "math",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Solve step by step: If 3x + 7 = 22, what is x?"
+        }
+      ]
+    },
+    {
+      "id": "t5",
+      "category": "technical",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Explain the difference between TCP and UDP in networking. Be concise."
+        }
+      ]
+    }
+  ],
+  "multimodal": [
+    {
+      "id": "m1",
+      "category": "shape_color",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Describe what you see in this image. What shape and color is it?"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAy0lEQVR4nO3PMRLDQAhD0b3/pZNmC08qQALFgzRuzf53Pi/fUQegM0A9A9QzQD0D1DNAPQN+753QR3yQdymWzmYwrhTSeQwYANbDBuBnSjrMqALo9VVDCdBUXzIsBLTW5w1JwEB90rAKMFafMewBDNeHDQYYYIABBhhggAEG/KUhGLUJMGmIFy0DzBhSOWlAtyHbshLQZyiEFAEdhlpFHUBkIO+jANwAPk4A3EvT6fdZypXHvbn0+yDxlmQGqGeAegaoZ4B6Bqj3esAXCaEh9XgKRgYAAAAASUVORK5CYII="
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m2",
+      "category": "pattern",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "What pattern do you see in this image? Describe the colors from top to bottom."
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAfElEQVR4nO3RwQnAQBDDwO2/6aSIewhhgQsY4fvu1OMFBcjHCwqQjxcUIB8vKEA+XlCAfLygAPl4wXwAT5i/ABcUIB8vKEA+XlCAfLygAPl4QQHy8YIC5OMFrwE8Yf4CXFCAfLygAPl4QQHy8YIC5OMFBcjHCwqQjxdsB/x5LPDiiLHqDAAAAABJRU5ErkJggg=="
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m3",
+      "category": "counting",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Describe the pattern in this image. Is it a checkerboard?"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAlklEQVR4nO3PsRHAQBDCwO+/absCAiIdMyImWL0X9oWt/M+BDKBBBtAgA2hQ/M9AV0AG0CADaJABNKgOWIHWYddABtAgA2iQATQo/megKyADaJABNMgAGlQHrEDrsGsgA2iQATTIABoU/zPQFZABNMgAGmQADaoDVqB12DWQATTIABpkAA2K/xnoCsgAGmQADTKABrX/H/1C6Vq1O0GZAAAAAElFTkSuQmCC"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m4",
+      "category": "gradient",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "这张图片从左到右的颜色变化是什么？"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAABHklEQVR4nO3PkaKDAAAF0GAQBIMgCIJBMAiCQRAMgiAJgsEgCIJBMAgGQTAYBEEQJMEgCILBIAiCIAiCIBgEQZD0PuH9wD1/cAiCIHa7HUmSFEXt93uaphmGYVmW47jD4cDz/PF4FARBFMXT6SRJkizL5/NZURRVVTVN03XdMIzL5XK9Xk3TtCzLtu3b7eY4zv1+d1338Xh4nuf7/vP5fL1eQRCEYRhFURzHSZKkafp+v7Msy/O8KIrP5/P9fsuyrKqqruumadq27bqu7/thGMZx/P1+0zTN87wsy7qu27YRCCCAAAIIIIAAAggggAACCCCAAAIIIIAAAggggAACCCCAAAIIIIAAAggggAACCCCAAAIIIIAAAggggMB/gT/BudLaJjGuagAAAABJRU5ErkJggg=="
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "m5",
+      "category": "quadrant",
+      "messages": [
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "This image is divided into four quadrants. What color is each quadrant?"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAbUlEQVR4nO3PwQkAUQhDQftv2q3hH9wQGHhnzczOnHZ7/YfyCwDKyy8AKC+/AKC8/AKA8vILAMrLLwAoL78AoLz8AoDy8gsAyssvACjv/sHxh905DQAAAAAAAAAAAAAAAAAAAAAAAAAAAADguQ/7Be0ehXGAqQAAAABJRU5ErkJggg=="
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
