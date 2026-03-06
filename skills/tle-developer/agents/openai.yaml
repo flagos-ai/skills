@@ -1,0 +1,4 @@
+interface:
+  display_name: "TLE Developer"
+  short_description: "TLE/Triton GPU kernel & compiler expert"
+  default_prompt: "Use $tle-developer to optimize TLE operators with SOP: baseline -> evidence -> single-change iteration -> regression/perf gates -> docs/backlog sync."
