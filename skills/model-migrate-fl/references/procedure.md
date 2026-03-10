@@ -262,6 +262,68 @@ bash {{skill_root}}/scripts/request.sh {{MODEL_DISPLAY_NAME}}
 
 ---
 
+## Step 11: E2E Correctness Verification
+
+> **→ Tell user**: `🔍 Step 11: Running E2E correctness verification against upstream GT...`
+
+This step compares the local plugin's output token-by-token against an upstream (vanilla) vLLM server to verify migration correctness.
+
+### Prerequisites
+
+- **GT server**: An upstream vLLM instance serving the same model. Can be remote (managed via `e2e_remote_serve.sh`) or any reachable endpoint.
+- **Local server**: Must already be running from Step 10.1 (`serve.sh`).
+
+### 11.1 (Optional) Start GT server remotely
+
+```bash
+bash {{skill_root}}/scripts/e2e_remote_serve.sh start {{skill_root}}/scripts/e2e_config.json {{MODEL_DISPLAY_NAME}}
+```
+
+Skip if GT server is already running. The `e2e_remote_serve.sh` script requires a config file; use `e2e_config.template.json` as base or pass a custom one.
+
+### 11.2 Run E2E evaluation
+
+All parameters have defaults — no config file needed. CLI args override everything:
+
+```bash
+python3 {{skill_root}}/scripts/e2e_eval.py --model {{MODEL_DISPLAY_NAME}} --gt-host <GT_IP> --gt-port 8122 --local-port 8122 --mode text
+```
+
+Optionally load a config file (CLI args still override):
+```bash
+python3 {{skill_root}}/scripts/e2e_eval.py --config {{skill_root}}/scripts/e2e_config.json --model {{MODEL_DISPLAY_NAME}} --mode text
+```
+
+Key CLI args:
+- `--gt-host` — GT server IP (default: 10.0.9.57)
+- `--gt-port` — GT server port (default: 8122)
+- `--local-port` — local server port (default: 8122, matching `serve.sh`)
+- `--results-dir` — where to save results (default: `scripts/../results/`)
+- `--max-tokens` — max tokens to generate (default: 256)
+- `--token-match-count` — how many tokens to compare (default: 32)
+
+Prompt modes:
+- `--mode text` — text-only prompts (5 prompts, default)
+- `--mode multimodal` — multimodal prompts (5 prompts, requires VL model)
+- `--mode all` — all 10 prompts
+
+Phase control:
+- `--gt-only` — only collect GT results (useful when GT server is temporary)
+- `--local-only` — only collect local results (GT results already saved)
+- `--compare-only` — only compare previously saved results
+
+### 11.4 Interpret results
+
+The script compares the first N tokens (default 32) between GT and local output. Results are saved to `shared_storage.results_dir`.
+
+- **All MATCH** → migration correctness verified
+- **Minor divergence** (e.g. 1-2 tokens differ after token #15) → likely acceptable numerical noise
+- **Early divergence** (within first 5 tokens) → likely a code bug, investigate
+
+> **→ Tell user**: Report E2E results (passed/failed/errors count, any divergence details). On failure: investigate weight loading, TP sharding, or op implementation differences.
+
+---
+
 ## Final Report
 
 After ALL steps complete, output:
@@ -288,9 +350,11 @@ Test results:
   - Functional:         N passed, M failed, K skipped — notes
 
 Verification:
-  - Benchmark: ✅ / ❌
-  - Serve:     ✅ / ❌
-  - Request:   ✅ / ❌
+  - Benchmark:  ✅ / ❌
+  - Serve:      ✅ / ❌
+  - Request:    ✅ / ❌
+  - E2E (text): ✅ / ❌  (N/M prompts matched, first 32 tokens)
+  - E2E (mm):   ✅ / ❌  (N/M prompts matched, first 32 tokens)
 
 Pre-existing issues: [list or "None"]
 Known issues / TODOs: [list or "None"]

@@ -304,9 +304,19 @@ self.fused_recurrent_gated_delta_rule_remain_query = FusedRecurrentGatedDeltaRul
 
 ---
 
+## P13: Do NOT Upgrade transformers to Support New Models
+
+The transformers version is determined by the pinned vLLM version (e.g. vLLM 0.13.0 → transformers 4.57.6). When migrating a new model whose HuggingFace config declares a newer `transformers_version` (e.g. `"5.0.2.dev0"`), do NOT upgrade the transformers package. Instead, create a config bridge in `vllm_fl/configs/`.
+
+**Why**: Silently upgrading transformers changes code paths — some ops may fall through to transformers' own implementations instead of the plugin's OOT operators or FlagGems, causing correctness issues. The transformers version should only change when the underlying vLLM version is upgraded.
+
+**When**: Every migration under the current vLLM pin. Use the config bridge approach (P2) to handle unrecognized `model_type` values.
+
+---
+
 ## Adding New Patches
 
-When a new incompatibility is discovered, append it as P13, P14, etc. Include:
+When a new incompatibility is discovered, append it as P14, P15, etc. Include:
 
 - **What** to change (before/after code example)
 - **Why** it's needed (what's missing or different in 0.13.0)

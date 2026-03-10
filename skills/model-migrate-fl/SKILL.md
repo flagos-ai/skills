@@ -14,10 +14,10 @@ argument-hint: model_name [upstream_folder] [plugin_folder]
 user-invokable: true
 compatibility: "Requires vLLM 0.13.0, Python 3.8+, GPU with CUDA, vllm-plugin-FL installed via pip install -e"
 metadata:
-  version: "1.2"
+  version: "1.0.0"
   author: flagos-ai
   category: workflow-automation
-  tags: [model-migration, vllm, backport]
+  tags: [model-migration, vllm, backport, e2e-verification]
 allowed-tools: "Bash(pytest:*) Bash(python3:*) Bash(git:*) Bash(vllm:*) Bash(cp:*) Bash(curl:*) Bash(bash:*) Bash(test:*) Bash(ls:*) Bash(pip:*) Bash(cd:*) Read Edit Write Glob Grep AskUserQuestion TaskCreate TaskUpdate TaskList TaskGet"
 ---
 
@@ -58,8 +58,12 @@ Read these files (relative to this SKILL.md):
 The procedure references executable scripts in `scripts/`:
 - `scripts/validate_migration.py` — automated code review (Step 6)
 - `scripts/benchmark.sh` — benchmark verification (Step 9)
-- `scripts/serve.sh` — serve model (Step 10.1)
+- `scripts/serve.sh` — serve model locally (Step 10.1, also used for E2E)
 - `scripts/request.sh` — test request (Step 10.2)
+- `scripts/e2e_eval.py` — E2E correctness verification (Step 11)
+- `scripts/e2e_test_prompts.json` — test prompts for E2E (5 text + 5 multimodal)
+- `scripts/e2e_config.template.json` — E2E config template (copy to `e2e_config.json` and fill in)
+- `scripts/e2e_remote_serve.sh` — manage GT server on remote machine via SSH
 
 Then investigate upstream source + HuggingFace to resolve all placeholders:
 
@@ -83,6 +87,19 @@ With placeholders resolved, execute every step in `procedure.md` sequentially. A
 
 **→ Tell user**: Before starting, output a numbered plan. Report progress at each step boundary.
 
+## Scripts Reference
+
+| Script | Step | Description |
+|---|---|---|
+| `validate_migration.py` | 6 | Automated import/API/registration checks |
+| `benchmark.sh` | 9 | `vllm bench throughput` with dummy weights |
+| `serve.sh` | 10, 11 | Start local vLLM server (port 8122, `VLLM_FL_PREFER_ENABLED=false`) |
+| `request.sh` | 10 | Quick smoke-test request |
+| `e2e_eval.py` | 11 | Token-level comparison vs upstream GT server |
+| `e2e_test_prompts.json` | 11 | 5 text + 5 multimodal test prompts |
+| `e2e_config.template.json` | 11 | Config template (GT machine, local port, eval params) |
+| `e2e_remote_serve.sh` | 11 | SSH-based GT server lifecycle (start/stop/status/logs) |
+
 ## Examples
 
 **Example 1: Typical new model**
@@ -94,7 +111,8 @@ Actions:
   3. Discover it wraps DeepseekV2 → follow kimi_k25 (wrapper) pattern
   4. Copy file, apply P1+P2 patches, create config bridge
   5. Register, validate, test, benchmark, serve+request
-Result: kimi_k25 fully working in plugin, all 10 steps passed
+  6. E2E verification against upstream GT
+Result: kimi_k25 fully working in plugin, all 11 steps passed
 ```
 
 **Example 2: Re-run after upstream update**
@@ -103,10 +121,13 @@ User says: "migrate qwen3_5 again, upstream updated"
 Actions:
   1. Idempotent re-run — overwrite existing files with fresh upstream copy
   2. Re-apply patches, re-validate, re-test
+  3. Re-run E2E to confirm no regression
 Result: qwen3_5 updated to match latest upstream, no regressions
 ```
 
 ## Troubleshooting
+
+**General principle**: When any runtime error occurs, **first compare vLLM upstream code** against both the plugin adaptation and the installed 0.13.0 environment. The diff is the fastest path to root cause. See `operational-rules.md § Debugging Priority: Upstream-First` for the full protocol.
 
 | Problem | Typical Cause | Fix |
 |---|---|---|
@@ -119,3 +140,8 @@ Result: qwen3_5 updated to match latest upstream, no regressions
 | Model outputs garbled/gibberish text | `ColumnParallelLinear` used for merged projections with different sub-dimensions (TP sharding mismatch) | Override `__init__` to use `MergedColumnParallelLinear(output_sizes=[...])`. See P8 in compatibility-patches.md |
 | `AssertionError: Duplicate op name` | Child class imports custom op from different module path than parent | Use same import path as parent module (e.g. `vllm_fl.ops.fla` not `vllm_fl.models.fla_ops`). See P11 |
 | `AttributeError` on `fused_recurrent_*` during CUDA graph warmup | `__init__` override with `nn.Module.__init__(self)` missed attributes used by inherited `_forward_core` | Create ALL attributes from parent's `__init__`, especially custom ops. See P12 |
+| E2E: local server not reachable | `serve.sh` port doesn't match `e2e_config.json` local port | Ensure both use same port (default 8122) |
+| E2E: GT server not reachable | GT machine down or docker/conda env wrong | Check `e2e_remote_serve.sh status` or SSH manually |
+| E2E: early token divergence (first 5 tokens) | Weight loading bug, TP sharding error | Check `load_weights`, `stacked_params_mapping`, MergedColumnParallelLinear |
+| E2E: late minor divergence (token #15+) | Numerical noise from different op implementations | Usually acceptable; document in report |
+| `resolve_op` fails with `VLLM_FL_PREFER_ENABLED=false` | Op not registered in dispatch, no fallback | Add try/except fallback to `flag_gems` in op import code |

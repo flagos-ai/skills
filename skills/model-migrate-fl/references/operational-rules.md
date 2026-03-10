@@ -43,6 +43,7 @@ Task 9:  Regression unit tests
 Task 10: Functional tests
 Task 11: Benchmark verification
 Task 12: Serve + request verification
+Task 13: E2E correctness verification (text + multimodal vs upstream GT)
 ```
 
 Once placeholders are resolved, UPDATE task descriptions with concrete values.
@@ -67,6 +68,13 @@ Once placeholders are resolved, UPDATE task descriptions with concrete values.
 ### Work-until-done principle
 
 Keep working until ALL tasks are completed. Do not stop after one step and wait. Make maximum progress each turn.
+
+### Common failure modes (lessons learned)
+
+1. **Stopping at blocking steps instead of working through them.** If a step requires waiting (e.g. compilation, server startup), use background tasks and continue with independent work. Never leave a session with incomplete tasks when you could have continued.
+2. **Getting stuck in monkey-patching rabbit holes.** When a compatibility issue arises (e.g. tokenizer class not found), try the simplest fix first: `.pth` file, wrapper script, or config override. Don't spend multiple rounds on increasingly complex import hook approaches.
+3. **Accidentally overwriting vLLM.** Running `pip install -e .` for the plugin can pull vLLM as a dependency. Always use `--no-deps` to prevent this. If it happens, restore with `MAX_JOBS=96 pip install --no-build-isolation -v -e <vllm_source>`.
+4. **Not running E2E to completion.** The migration is NOT done until E2E correctness verification passes. Benchmark/serve smoke tests are intermediate checkpoints, not the finish line.
 
 ## Bash Command Rules
 
@@ -104,6 +112,36 @@ sleep 5
 
 **NEVER skip benchmark or serve due to GPU memory.** Always free GPUs and complete all verification steps.
 
+## Serve / Benchmark Command Defaults
+
+When launching `vllm serve` or `vllm bench`, **always** include these flags unless there is a specific reason not to:
+
+1. **`--load-format fastsafetensors`** — enables parallel shard loading via GDS/io_uring, cutting weight load time from ~11 min to ~2 min for large models. This is the standard on this cluster.
+2. **`VLLM_USE_DEEP_GEMM=0`** — `deep_gemm` is not installed in this environment. Without this env var, FP8 MLA models will crash at inference time with `RuntimeError: DeepGEMM backend is not available`.
+
+Example:
+```bash
+VLLM_USE_DEEP_GEMM=0 vllm serve /models/<MODEL> --tensor-parallel-size 8 --trust-remote-code --port 8000 --max-model-len 4096 --load-format fastsafetensors
+```
+
+## Debugging Priority: Upstream-First
+
+When inference errors, crashes, or unexpected behavior occur during or after migration, **always check vLLM upstream code first** before attempting local fixes.
+
+### Protocol
+
+1. **Compare upstream vs local**: diff the upstream model file (`{{upstream_folder}}/vllm/model_executor/models/`) against the plugin model file to identify any adaptation errors introduced during migration.
+2. **Compare upstream vs 0.13.0 environment**: diff the upstream vLLM framework code (attention backends, config, utils, etc.) against the installed 0.13.0 version (`/mine/vllm/` or `/usr/local/lib/python*/dist-packages/vllm/`) to find API or behavior differences that the model code depends on.
+3. **Root-cause from the diff**: most runtime errors fall into one of:
+   - Migration patch introduced a bug (wrong import path, missing attribute, signature mismatch)
+   - Upstream model code relies on a newer vLLM API not present in 0.13.0 (needs compatibility patch)
+   - Environment difference (CUDA version, deep_gemm version, library availability)
+4. **Only after upstream comparison** should you attempt speculative fixes, monkey-patches, or workarounds.
+
+### Why
+
+The plugin's model code is a direct copy-then-patch of upstream. When something breaks, the diff between upstream and our adaptation is the fastest path to root cause. Guessing or adding blind patches without comparing wastes time and often introduces new issues.
+
 ## Resilience
 
 ### Network retry
@@ -126,3 +164,11 @@ If TaskList shows some tasks `completed` and some not → previous session was i
 - Full **read** for `/usr/local/lib/` (vLLM 0.13.0 source), `/tmp/` (upstream clone), `/models/` (HF checkpoints)
 - No `sudo`/`chmod` needed
 - All fixes stay **inside the plugin directory**
+
+## vLLM Version Protection
+
+**NEVER** modify the installed vLLM version or its source code unless explicitly debugging a vLLM bug. Specifically:
+
+1. **Do not change vLLM code** — the plugin depends on vLLM v0.13.0 as-is. All customisation goes into the plugin.
+2. **Do not reinstall/upgrade vLLM** — running `pip install -e .` for the plugin may pull vLLM as a dependency and overwrite the compiled version. Always use `pip install --no-build-isolation --no-deps -e .` for the plugin to avoid this.
+3. **If vLLM gets accidentally overwritten** (e.g. C extensions fail with `libcudart` errors), restore it with `MAX_JOBS=96 pip install --no-build-isolation -v -e <vllm_source_dir>` — do NOT modify vLLM source to work around the issue.
