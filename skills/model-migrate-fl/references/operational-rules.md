@@ -142,6 +142,27 @@ When inference errors, crashes, or unexpected behavior occur during or after mig
 
 The plugin's model code is a direct copy-then-patch of upstream. When something breaks, the diff between upstream and our adaptation is the fastest path to root cause. Guessing or adding blind patches without comparing wastes time and often introduces new issues.
 
+### CUDA Error Localization
+
+When a serve or inference step crashes with a CUDA error (e.g. `CUDA error: an illegal memory access`, `CUDA error: misaligned address`, `RuntimeError: CUDA error`), the default stack trace is **misleading** because CUDA kernels execute asynchronously — the error is reported at a later CUDA synchronization point, not at the line that actually triggered it.
+
+**Use `CUDA_LAUNCH_BLOCKING=1`** to force synchronous CUDA execution, which makes the error appear at the exact offending line:
+
+```bash
+CUDA_LAUNCH_BLOCKING=1 VLLM_USE_DEEP_GEMM=0 vllm serve /models/<MODEL> --tensor-parallel-size 8 --trust-remote-code --port 8122 --max-model-len 4096 --load-format fastsafetensors
+```
+
+**When to use:**
+- Server starts but crashes on first inference request
+- Inference returns CUDA errors with unhelpful tracebacks
+- Suspected operator-level bugs (custom kernels, attention backends, quantization ops)
+
+**When NOT to use:**
+- Normal development/testing — it significantly slows down execution
+- Import errors or config parsing errors — these are CPU-side, not CUDA-related
+
+Once the exact failing line is identified, cross-reference with the upstream-first protocol above to determine whether it's a migration patch issue or an API compatibility gap.
+
 ## Resilience
 
 ### Network retry
