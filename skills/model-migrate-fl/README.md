@@ -249,3 +249,9 @@ Claude Code requires skills to be placed under `.claude/skills/` in the project 
 mkdir -p .claude/skills
 cp -r <path-to-this-repo>/skills/model-migrate-fl .claude/skills/
 ```
+
+---
+
+## License
+
+This project is licensed under the Apache 2.0 License. See [LICENSE.txt](LICENSE.txt) for details.

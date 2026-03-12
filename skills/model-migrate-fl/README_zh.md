@@ -246,3 +246,9 @@ Claude Code 要求 skill 放在项目根目录的 `.claude/skills/` 下。在 vl
 mkdir -p .claude/skills
 cp -r <本仓库路径>/skills/model-migrate-fl .claude/skills/
 ```
+
+---
+
+## 许可证
+
+This project is licensed under the Apache 2.0 License. See [LICENSE.txt](LICENSE.txt) for details.
