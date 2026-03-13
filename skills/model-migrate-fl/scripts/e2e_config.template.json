@@ -1,12 +1,12 @@
 {
   "_comment": "E2E correctness verification config. Copy to e2e_config.json and fill in actual values.",
   "gt_machine": {
-    "host": "10.0.9.57",
+    "host": "<GT_HOST_IP>",
     "ssh_user": "root",
     "ssh_port": 22,
     "ssh_key": "~/.ssh/id_ed25519",
-    "docker_container": "zy_dev_qwen35_vllm_013_native_vllm",
-    "conda_env": "flagscale-inference",
+    "docker_container": "<CONTAINER_NAME>",
+    "conda_env": "<CONDA_ENV>",
     "vllm_port": 8122,
     "env_vars": {
       "VLLM_FL_PREFER_ENABLED": "false",
@@ -14,14 +14,14 @@
     },
     "gpu_ids": "0,1,2,3,4,5,6,7",
     "tensor_parallel_size": 8,
-    "extra_serve_args": "--trust-remote-code --reasoning-parser deepseek_r1 --load-format fastsafetensors"
+    "extra_serve_args": "--trust-remote-code --load-format fastsafetensors"
   },
   "local": {
     "vllm_port": 8122
   },
   "shared_storage": {
     "models_dir": "/models",
-    "results_dir": "/mine/qwen_3_5_cu13/e2e_results"
+    "results_dir": "./results"
   },
   "eval": {
     "max_tokens": 256,

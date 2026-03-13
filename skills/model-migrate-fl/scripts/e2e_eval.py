@@ -6,7 +6,7 @@ Usage:
     python3 e2e_eval.py --model Qwen3.5-397B-A17B-Real --local-only
 
     # Full pipeline with CLI args (no config file needed)
-    python3 e2e_eval.py --model MODEL_NAME --gt-host 10.0.9.57 --gt-port 8122 --local-port 8122
+    python3 e2e_eval.py --model MODEL_NAME --gt-host <GT_HOST_IP> --gt-port 8122 --local-port 8122
 
     # With config file (CLI args override config values)
     python3 e2e_eval.py --config e2e_config.json --model MODEL_NAME
@@ -47,7 +47,7 @@ def build_effective_config(args):
     # Defaults
     cfg = {
         "gt_machine": {
-            "host": "10.0.9.57",
+            "host": None,
             "vllm_port": 8122,
         },
         "local": {
@@ -299,7 +299,7 @@ def main():
     parser.add_argument("--prompts", default=DEFAULT_PROMPTS, help="Path to test prompts JSON")
 
     # Server endpoints
-    parser.add_argument("--gt-host", default=None, help="GT server host (default: 10.0.9.57)")
+    parser.add_argument("--gt-host", default=None, help="GT server host (required, or set gt_machine.host in config file)")
     parser.add_argument("--gt-port", type=int, default=None, help="GT server port (default: 8122)")
     parser.add_argument("--local-port", type=int, default=None, help="Local server port (default: 8122)")
 
@@ -345,6 +345,11 @@ def main():
 
     # --- GT inference ---
     if not args.local_only and not args.compare_only:
+        if not gt_cfg["host"] or str(gt_cfg["host"]).startswith("<"):
+            print("ERROR: GT host not configured.")
+            print("  Use --gt-host <IP> or set gt_machine.host in config file.")
+            print("  Example: python3 e2e_eval.py --model MODEL --gt-host 10.0.1.100")
+            sys.exit(1)
         print(f"\n[Phase 1] Generating GT results on {gt_cfg['host']}...")
         if not wait_for_server(gt_cfg["host"], gt_cfg["vllm_port"], timeout=600):
             print(f"ERROR: GT server at {gt_cfg['host']}:{gt_cfg['vllm_port']} not reachable")

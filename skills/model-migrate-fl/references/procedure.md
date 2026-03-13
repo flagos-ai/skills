@@ -272,6 +272,16 @@ This step compares the local plugin's output token-by-token against an upstream 
 
 - **GT server**: An upstream vLLM instance serving the same model. Can be remote (managed via `e2e_remote_serve.sh`) or any reachable endpoint.
 - **Local server**: Must already be running from Step 10.1 (`serve.sh`).
+- **E2E config**: If no `e2e_config.json` exists yet, copy from template and fill in actual values:
+  ```bash
+  cp {{skill_root}}/scripts/e2e_config.template.json {{skill_root}}/scripts/e2e_config.json
+  ```
+  Use AskUserQuestion to collect: GT machine IP, SSH user, docker container name (if any), conda env (if any).
+- **SSH access** (required for remote GT server management): Passwordless SSH must be configured to the GT machine. Verify with:
+  ```bash
+  ssh -i ~/.ssh/id_ed25519 <GT_USER>@<GT_HOST_IP> hostname
+  ```
+  If this fails, guide the user to set up SSH key: `ssh-copy-id -i ~/.ssh/id_ed25519 <GT_USER>@<GT_HOST_IP>`
 
 ### 11.1 (Optional) Start GT server remotely
 
@@ -295,7 +305,7 @@ python3 {{skill_root}}/scripts/e2e_eval.py --config {{skill_root}}/scripts/e2e_c
 ```
 
 Key CLI args:
-- `--gt-host` — GT server IP (default: 10.0.9.57)
+- `--gt-host` — GT server IP (required, or set in config file)
 - `--gt-port` — GT server port (default: 8122)
 - `--local-port` — local server port (default: 8122, matching `serve.sh`)
 - `--results-dir` — where to save results (default: `scripts/../results/`)

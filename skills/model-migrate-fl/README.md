@@ -4,7 +4,7 @@
 
 ## Overview
 
-`model-migrate-fl` is a Claude Code Skill that migrates model code from the **latest vLLM upstream** into the **vllm-plugin-FL project** (pinned at vLLM v0.13.0).
+`model-migrate-fl` is an AI coding skill that migrates model code from the **latest vLLM upstream** into the **vllm-plugin-FL project** (pinned at vLLM v0.13.0).
 
 ### Problem Statement
 
@@ -15,7 +15,7 @@ This skill automates the entire migration workflow: **copy from upstream -> adap
 ### Usage
 
 ```bash
-# Invoke in Claude Code
+# Invoke in your AI coding assistant
 /model-migrate-fl qwen3_5
 /model-migrate-fl kimi_k25
 /model-migrate-fl glm5 /path/to/upstream /path/to/plugin
@@ -52,7 +52,7 @@ This skill automates the entire migration workflow: **copy from upstream -> adap
 
 The approach is **not** "read and rewrite", but:
 1. Directly `cp` the upstream file into the plugin directory
-2. Apply compatibility patches (P1-P12) via targeted edits
+2. Apply compatibility patches (P1-P13) via targeted edits
 3. Verify import passes
 
 This maximally preserves the upstream implementation and minimizes human error.
@@ -62,13 +62,13 @@ This maximally preserves the upstream implementation and minimizes human error.
 ## Directory Structure
 
 ```
-skills/claude/skills/model-migrate-fl/
+skills/model-migrate-fl/
 ├── SKILL.md                          # Skill definition (entry point)
 ├── README.md                         # This document (English)
 ├── README_zh.md                      # Chinese version
 ├── references/                       # Reference documents
 │   ├── procedure.md                  # 13-step migration procedure (detailed)
-│   ├── compatibility-patches.md      # 0.13.0 compatibility patch catalog (P1-P12)
+│   ├── compatibility-patches.md      # 0.13.0 compatibility patch catalog (P1-P13)
 │   └── operational-rules.md          # Operational rules (communication, tasks, GPU, etc.)
 ├── scripts/                          # Executable scripts
 │   ├── validate_migration.py         # Automated code review
@@ -89,7 +89,7 @@ skills/claude/skills/model-migrate-fl/
 ### Skill Definition
 
 #### `SKILL.md`
-The skill entry point. Defines trigger conditions, argument format, execution overview, script index, and troubleshooting guide. Claude Code uses this file to identify and invoke the skill.
+The skill entry point. Defines trigger conditions, argument format, execution overview, script index, and troubleshooting guide. The AI coding assistant uses this file to identify and invoke the skill.
 
 ### Reference Documents (`references/`)
 
@@ -121,6 +121,7 @@ Catalog of all known upstream -> 0.13.0 incompatibilities and their fixes. Each 
 | P10 | mamba_cache_mode -> enable_prefix_caching | Cache mode API difference |
 | P11 | Custom Op import path dedup | Avoid `Duplicate op name` errors |
 | P12 | Complete `__init__` override checklist | Don't miss attributes when skipping parent init |
+| P13 | Do NOT upgrade transformers | Use Config Bridge instead of upgrading transformers version |
 
 #### `operational-rules.md` — Operational Rules
 - **Communication protocol**: Report progress at every step boundary, no silent execution
@@ -165,7 +166,7 @@ Sends a simple chat completion request to verify the server responds correctly.
 #### `e2e_eval.py` — E2E Accuracy Verification (Step 11, Core Tool)
 ```bash
 # Full pipeline: GT + Local + Compare
-python3 e2e_eval.py --model Qwen3.5-397B-A17B-Real --gt-host 10.0.9.57 --mode text
+python3 e2e_eval.py --model Qwen3.5-397B-A17B-Real --gt-host <GT_HOST_IP> --mode text
 
 # With config file
 python3 e2e_eval.py --config e2e_config.json --model Qwen3.5-397B-A17B-Real --mode text
@@ -189,7 +190,7 @@ Output files:
 Key parameters:
 | Parameter | Default | Description |
 |---|---|---|
-| `--gt-host` | 10.0.9.57 | GT server IP |
+| `--gt-host` | (required) | GT server IP |
 | `--gt-port` | 8122 | GT server port |
 | `--local-port` | 8122 | Local server port |
 | `--mode` | text | `text` / `multimodal` / `all` |
@@ -205,9 +206,9 @@ Key parameters:
 ```json
 {
   "gt_machine": {
-    "host": "10.0.9.57",
-    "docker_container": "zy_dev_qwen35_vllm_013_native_vllm",
-    "conda_env": "flagscale-inference",
+    "host": "<GT_HOST_IP>",
+    "docker_container": "<CONTAINER_NAME>",
+    "conda_env": "<CONDA_ENV>",
     "vllm_port": 8122,
     "env_vars": { "VLLM_FL_PREFER_ENABLED": "false" },
     "extra_serve_args": "--trust-remote-code --load-format fastsafetensors"
@@ -217,6 +218,11 @@ Key parameters:
 }
 ```
 Copy to `e2e_config.json` and fill in actual values before use.
+
+> **Prerequisites for remote GT server:**
+> 1. Set up passwordless SSH to the GT machine: `ssh-copy-id -i ~/.ssh/id_ed25519 <user>@<GT_HOST_IP>`
+> 2. Verify connectivity: `ssh -i ~/.ssh/id_ed25519 <user>@<GT_HOST_IP> hostname`
+> 3. If the GT server runs inside a Docker container, ensure the container name and conda env are correct in the config
 
 #### `e2e_remote_serve.sh` — Remote GT Server Management
 ```bash
@@ -242,7 +248,19 @@ Manages the GT vLLM server on a remote machine via SSH -> Docker exec -> Conda r
 
 ## Usage in vllm-plugin-FL
 
-Claude Code requires skills to be placed under `.claude/skills/` in the project root. To use this skill in vllm-plugin-FL:
+Skills are typically placed under `.claude/skills/` (or the equivalent skills directory for your editor) in the project root. To use this skill in vllm-plugin-FL:
+
+### Quick Install (via npx)
+
+```bash
+# Install this skill only
+npx skills add flagos-ai/skills --skill model-migrate-fl -a claude-code
+
+# Or install all Flagos skills at once
+npx skills add flagos-ai/skills -a claude-code
+```
+
+### Manual Install
 
 ```bash
 # From vllm-plugin-FL project root
