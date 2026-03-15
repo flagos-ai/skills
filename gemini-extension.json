@@ -1,0 +1,6 @@
+{
+  "name": "flagos-skills",
+  "description": "Agent skills for the FlagOS multi-chip AI inference platform. Includes model migration, environment verification, vendor onboarding, and more.",
+  "version": "1.0.0",
+  "contextFileName": "agents/AGENTS.md"
+}
