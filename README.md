@@ -112,12 +112,33 @@ This repo includes `gemini-extension.json` and `agents/AGENTS.md` for Gemini CLI
 
 For any agent that supports the [Agent Skills standard](https://agentskills.io/specification), point it at the `skills/` directory in this repository. Each skill is self-contained with a `SKILL.md` entry point. The `agents/AGENTS.md` file can also be used as a fallback for agents that don't support skills natively.
 
-## Available Skills
+## Skills Catalog
 
 <!-- BEGIN_SKILLS_TABLE -->
-| Name | Category | Description | Docs |
-|------|----------|-------------|------|
-| [`model-migrate-flagos`](skills/model-migrate-flagos/) | workflow-automation | Migrate a model from upstream vLLM into the vllm-plugin-FL project. Use when adding new model support, porting model code, or backporting newly released models. | [SKILL.md](skills/model-migrate-flagos/SKILL.md) |
+| Category | Sub-category | Skill | Description |
+|----------|-------------|-------|-------------|
+| **Inference & Serving** | Model Migration | [`model-migrate-flagos`](skills/model-migrate-flagos/) | Migrate a model from upstream vLLM into vllm-plugin-FL (pinned at v0.13.0). Automates the full 13-step copy-then-patch workflow with E2E verification. |
+| | Serving Deployment | [PR #6 `flagrelease`](https://github.com/flagos-ai/skills/pull/6) | Deploy and configure vLLM-FL / SGLang-FL serving instances across multi-chip environments. |
+| | Preflight Check | *Planned* | Verify GPU/accelerator availability, driver versions, Python env, and chip compatibility before running inference. |
+| **Training & RLHF** | Training Migration | *Planned* | Adapt training scripts for FlagScale / Megatron-LM-FL across different AI chips. |
+| | RLHF Pipeline | *Planned* | Set up and debug verl-FL reinforcement learning workflows. |
+| **Operator & Compiler** | TLE Primitive Dev | [PR #2 `tle-developer`](https://github.com/flagos-ai/skills/pull/2) | Develop TLE (Triton Language Extensions) primitives and build operators using TLE-Lite / TLE-Struct / TLE-Raw across FlagTree backends. |
+| | Operator Optimization | *Planned* | Guided iterative performance tuning for existing FlagGems / FlagAttention operators — profiling, bottleneck analysis, and optimization suggestions. |
+| | Kernel Generation | [PR #10 `kernelgen`](https://github.com/flagos-ai/skills/pull/10) | General-purpose GPU kernel generation via KernelGen MCP for any Python/Triton project, covering multi-chip targets (NVIDIA, Ascend, Cambricon, Moore Threads, Iluvatar, etc.). |
+| | Kernel Gen for FlagGems | [PR #10 `kernelgen-for-flaggems`](https://github.com/flagos-ai/skills/pull/10) | FlagGems-specific kernel generation with promotion rules, `pointwise_dynamic` wrappers, and `_FULL_CONFIG` registration. |
+| | Kernel Gen for vLLM | [PR #10 `kernelgen-for-vllm`](https://github.com/flagos-ai/skills/pull/10) | vLLM-specific kernel generation with SPDX headers, `vllm.logger`, `@triton.autotune`, and custom op registration. |
+| | KernelGen Feedback | [PR #10 `kernelgen-submit-feedback`](https://github.com/flagos-ai/skills/pull/10) | Submit bug reports and improvement suggestions for KernelGen as structured GitHub issues. |
+| | Operator Diagnosis | *Planned* | Diagnose abnormal operators in the FlagOS stack — identify precision errors, performance regressions, and backend-specific failures across chips. |
+| | Compiler Backend Adaptation | *Planned* | Port and debug FlagTree / Triton compiler backends for new AI chip architectures. |
+| **Communication** | Collective Ops | *Planned* | Adapt and benchmark FlagCX cross-chip communication primitives (AllReduce, AllGather, Send/Recv, etc.) across 11+ backends (NCCL, IXCCL, CNCL, MCCL, etc.). |
+| **Benchmarking & Eval** | Performance Benchmark | [PR #6 `perf-test`](https://github.com/flagos-ai/skills/pull/6) | Run and analyze FlagPerf benchmarks; generate multi-dimensional comparison reports (throughput, memory, scaling) across chips. |
+| | E2E Accuracy Eval | [PR #6 `model-verify`](https://github.com/flagos-ai/skills/pull/6) | Token-level accuracy verification between different serving backends or chip targets. |
+| **Environment & Deployment** | Stack Installation | [PR #6 `install-stack`](https://github.com/flagos-ai/skills/pull/6) | One-click FlagOS software stack installation on a target chip — auto-detect hardware, resolve dependencies, and configure the full toolchain (FlagTree + FlagGems + vLLM-FL + FlagCX). |
+| | Base Image Selection | [PR #5 `gpu-container-setup`](https://github.com/flagos-ai/skills/pull/5) | Find and recommend the optimal base Docker image for domestic AI chip model deployment — matching chip type, driver version, CUDA/SDK compatibility, and framework requirements. |
+| | Container Build | *Planned* | Build and publish multi-chip Docker images with correct driver/library dependencies. |
+| | CI Pipeline | *Planned* | Configure and debug FlagOps CI/CD pipelines for multi-chip build matrices. |
+| **Developer Tooling** | Skill Development | [`skill-creator-flagos`](skills/skill-creator-flagos/) | Create, improve, and validate skills for this repository. Scaffolding, conventions check, and test case evaluation. |
+| | Chip Onboarding | *Planned* | Guide new chip vendors through the FlagOS adaptation process end-to-end. |
 <!-- END_SKILLS_TABLE -->
 
 ### Using skills in your agent
@@ -175,15 +196,6 @@ Your agent automatically loads the corresponding `SKILL.md` instructions and hel
    ```
 
 See [contributing.md](contributing.md) for the full contribution guide.
-
-## Skill Categories
-
-| Category | Description | Examples |
-|----------|-------------|----------|
-| **workflow-automation** | Multi-step processes: model migration, vendor onboarding, E2E validation | `model-migrate-flagos` |
-| **deployment** | Environment checks, container builds, multi-chip CI | — |
-| **enterprise-standards** | Brand guidelines, doc templates, code standards | — |
-| **tool-integration** | CI/CD, monitoring, internal platforms, third-party SaaS | — |
 
 ## License
 

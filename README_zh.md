@@ -112,12 +112,33 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
 
 对于任何支持 [Agent Skills 标准](https://agentskills.io/specification) 的智能体，将其指向本仓库的 `skills/` 目录即可。每个 skill 都是独立的，以 `SKILL.md` 为入口。`agents/AGENTS.md` 文件可作为不原生支持 skills 的智能体的 fallback。
 
-## 已有 Skills
+## Skills 总览
 
 <!-- BEGIN_SKILLS_TABLE -->
-| 名称 | 分类 | 说明 | 文档 |
-|------|------|------|------|
-| [`model-migrate-flagos`](skills/model-migrate-flagos/) | workflow-automation | 将上游 vLLM 模型迁移到 vllm-plugin-FL 项目。用于添加新模型支持、移植模型代码或回溯新发布的模型。 | [SKILL.md](skills/model-migrate-flagos/SKILL.md) |
+| 大分类 | 小分类 | Skill | 说明 |
+|--------|--------|-------|------|
+| **推理与服务** | 模型迁移 | [`model-migrate-flagos`](skills/model-migrate-flagos/) | 将上游 vLLM 模型迁移到 vllm-plugin-FL（锁定 v0.13.0）。自动化 13 步 copy-then-patch 流程，含 E2E 精度验证。 |
+| | 服务部署 | [PR #6 `flagrelease`](https://github.com/flagos-ai/skills/pull/6) | 在多芯片环境中部署和配置 vLLM-FL / SGLang-FL 推理服务。 |
+| | 环境预检 | *待开发* | 推理前检查 GPU/加速卡可用性、驱动版本、Python 环境及芯片兼容性。 |
+| **训练与 RLHF** | 训练迁移 | *待开发* | 将训练脚本适配到 FlagScale / Megatron-LM-FL，支持多芯片。 |
+| | RLHF 流水线 | *待开发* | 搭建和调试 verl-FL 强化学习工作流。 |
+| **算子与编译器** | TLE 原语开发 | [PR #2 `tle-developer`](https://github.com/flagos-ai/skills/pull/2) | 开发 TLE（Triton Language Extensions）原语，利用 TLE-Lite / TLE-Struct / TLE-Raw 三级扩展在 FlagTree 各后端构建算子。 |
+| | 算子性能优化 | *待开发* | 基于已有 FlagGems / FlagAttention 算子版本，提供性能剖析、瓶颈分析和优化建议，引导持续迭代调优。 |
+| | 算子生成 | [PR #10 `kernelgen`](https://github.com/flagos-ai/skills/pull/10) | 通过 KernelGen MCP 通用算子生成，支持多芯片目标（NVIDIA、昇腾、寒武纪、摩尔线程、天数智芯等）。 |
+| | 算子生成（FlagGems） | [PR #10 `kernelgen-for-flaggems`](https://github.com/flagos-ai/skills/pull/10) | FlagGems 专用算子生成，含 promotion 规则、`pointwise_dynamic` 封装和 `_FULL_CONFIG` 注册。 |
+| | 算子生成（vLLM） | [PR #10 `kernelgen-for-vllm`](https://github.com/flagos-ai/skills/pull/10) | vLLM 专用算子生成，含 SPDX 头、`vllm.logger`、`@triton.autotune` 和自定义算子注册。 |
+| | KernelGen 反馈 | [PR #10 `kernelgen-submit-feedback`](https://github.com/flagos-ai/skills/pull/10) | 以结构化 GitHub Issue 提交 KernelGen 的 Bug 报告和改进建议。 |
+| | 异常算子诊断 | *待开发* | 为 FlagOS 技术栈诊断异常算子——定位精度错误、性能回退和后端特定故障，跨芯片排查。 |
+| | 编译器后端适配 | *待开发* | 为新 AI 芯片架构移植和调试 FlagTree / Triton 编译器后端。 |
+| **通信** | 集合通信 | *待开发* | 适配和基准测试 FlagCX 跨芯片通信原语（AllReduce、AllGather、Send/Recv 等），覆盖 11+ 后端（NCCL、IXCCL、CNCL、MCCL 等）。 |
+| **评测与基准** | 性能评测 | [PR #6 `perf-test`](https://github.com/flagos-ai/skills/pull/6) | 运行和分析 FlagPerf 基准测试，生成多维度跨芯片对比报告（吞吐、显存、扩展性）。 |
+| | E2E 精度验证 | [PR #6 `model-verify`](https://github.com/flagos-ai/skills/pull/6) | 不同推理后端或芯片目标间的 token 级精度对比验证。 |
+| **环境与部署** | 软件栈安装 | [PR #6 `install-stack`](https://github.com/flagos-ai/skills/pull/6) | 在目标芯片上一键安装 FlagOS 软件栈——自动检测硬件、解析依赖、配置完整工具链（FlagTree + FlagGems + vLLM-FL + FlagCX）。 |
+| | 基础镜像选型 | [PR #5 `gpu-container-setup`](https://github.com/flagos-ai/skills/pull/5) | 为国产 AI 芯片模型部署推荐最优基础 Docker 镜像——匹配芯片型号、驱动版本、CUDA/SDK 兼容性和框架需求。 |
+| | 容器构建 | *待开发* | 构建含正确驱动和库依赖的多芯片 Docker 镜像。 |
+| | CI 流水线 | *待开发* | 配置和调试 FlagOps 多芯片构建矩阵的 CI/CD 流水线。 |
+| **开发者工具** | Skill 开发 | [`skill-creator-flagos`](skills/skill-creator-flagos/) | 创建、改进和验证本仓库中的 skill。支持脚手架、规范检查和测试用例评估。 |
+| | 芯片对接 | *待开发* | 引导新芯片厂商完成 FlagOS 全流程适配。 |
 <!-- END_SKILLS_TABLE -->
 
 ### 在智能体中使用 Skills
@@ -175,15 +196,6 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
    ```
 
 详见 [contributing.md](contributing.md) 贡献指南。
-
-## Skill 分类
-
-| 分类 | 说明 | 示例 |
-|------|------|------|
-| **workflow-automation** | 多步骤流程：模型迁移、厂商对接、E2E 验证 | `model-migrate-flagos` |
-| **deployment** | 环境检查、容器构建、多芯片 CI | — |
-| **enterprise-standards** | 品牌规范、文档模版、代码规范 | — |
-| **tool-integration** | CI/CD、监控系统、内部平台、第三方 SaaS | — |
 
 ## 许可证
 

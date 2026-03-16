@@ -61,13 +61,17 @@ Avoid:
 
 ## Skill Categories
 
+See the [Skills Catalog](README.md#skills-catalog) in README.md for the full category hierarchy. Major categories:
+
 | Category | Description | Example |
 |----------|-------------|---------|
-| `workflow-automation` | Multi-step workflows | model-migrate-flagos |
-| `deployment-verification` | Deployment & environment validation | preflight-check |
-| `build-tooling` | Build & release tools | build-vendor-image |
-| `code-standard` | Coding standards & review | — |
-| `operations` | Operational tasks | — |
+| Inference & Serving | Model migration, serving deployment, preflight checks | `model-migrate-flagos` |
+| Training & RLHF | Training adaptation, RLHF pipelines | — |
+| Operator & Compiler | TLE primitive dev, operator optimization, kernel generation, operator diagnosis, compiler backend adaptation | — |
+| Communication | Cross-chip collective ops (FlagCX) | — |
+| Benchmarking & Eval | FlagPerf benchmarks, E2E accuracy verification | — |
+| Environment & Deployment | Stack installation, base image selection, container builds, CI pipelines | — |
+| Developer Tooling | Skill development, chip vendor onboarding | `skill-creator-flagos` |
 
 ## PR Template
 
