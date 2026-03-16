@@ -1,12 +1,12 @@
 ---
-name: skill-creator
+name: skill-creator-flagos
 description: >
   Create new skills, modify existing skills, and validate skill quality for the FlagOS skills
   repository. Use this skill whenever someone wants to create a skill from scratch, improve or
   edit an existing skill, scaffold a new skill directory, validate skill structure, or run test
   cases against a skill. Trigger when the user says things like "create a skill", "make a new
   skill for X", "scaffold a skill", "improve this skill", "validate my skill", or simply
-  "/skill-creator". Also trigger when users mention turning a workflow into a reusable skill,
+  "/skill-creator-flagos". Also trigger when users mention turning a workflow into a reusable skill,
   or want to package a repeated process as a skill.
 argument-hint: "[skill-name] [--init | --validate | --eval]"
 user-invokable: true
@@ -33,10 +33,10 @@ This skill guides you through the full lifecycle of skill development:
 ## Usage
 
 ```
-/skill-creator                        # Interactive — asks what you want to do
-/skill-creator my-new-skill --init    # Scaffold a new skill
-/skill-creator my-skill --validate    # Validate an existing skill
-/skill-creator my-skill --eval        # Run test prompts against a skill
+/skill-creator-flagos                       # Interactive — asks what you want to do
+/skill-creator-flagosmy-new-skill --init    # Scaffold a new skill
+/skill-creator-flagosmy-skill --validate    # Validate an existing skill
+/skill-creator-flagosmy-skill --eval        # Run test prompts against a skill
 ```
 
 ## Execution
@@ -85,7 +85,7 @@ python3 {{skill_root}}/scripts/init_skill.py {{skill_name}} --path {{skills_dir}
 ```
 
 Where:
-- `{{skill_root}}` = absolute path to this skill-creator's directory
+- `{{skill_root}}` = absolute path to this skill-creator-flagos's directory
 - `{{skills_dir}}` = path to the `skills/` directory (usually the parent of `{{skill_root}}`)
 
 The script creates the directory with SKILL.md template, LICENSE.txt, and optional subdirectories.
@@ -248,7 +248,7 @@ This generates a report showing which assertions passed/failed for each test cas
 | Placeholder | How to derive |
 |---|---|
 | `{{skill_name}}` | From user input, normalized to hyphen-case |
-| `{{skill_root}}` | Absolute path to this skill-creator's directory |
+| `{{skill_root}}` | Absolute path to this skill-creator-flagos's directory |
 | `{{repo_root}}` | Absolute path to the repository root (parent of `skills/`) |
 | `{{skills_dir}}` | Path to the `skills/` directory containing all skills |
 
@@ -256,7 +256,7 @@ This generates a report showing which assertions passed/failed for each test cas
 
 **Example 1: Create a new skill from scratch**
 ```
-User says: "/skill-creator preflight-check --init"
+User says: "/skill-creator-flagospreflight-check --init"
 Actions:
   1. Parse → skill_name=preflight-check, mode=create
   2. Interview user about what preflight-check should do
@@ -270,7 +270,7 @@ Result: Complete preflight-check skill ready for use
 
 **Example 2: Improve an existing skill**
 ```
-User says: "improve model-migrate-fl, the description could be better"
+User says: "improve model-migrate-flagos, the description could be better"
 Actions:
   1. Read existing SKILL.md and all references
   2. Analyze description — find it's too long and not trigger-friendly
@@ -282,7 +282,7 @@ Result: Improved skill with better triggering accuracy
 
 **Example 3: Validate all skills**
 ```
-User says: "/skill-creator --validate"
+User says: "/skill-creator-flagos--validate"
 Actions:
   1. No skill_name provided → validate all skills in skills/
   2. Run validate_skill.py on each skill directory

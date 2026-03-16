@@ -87,7 +87,7 @@ The agent reads only the relevant reference file.
 **Pattern 2: Workflow with reference catalog**
 
 ```
-model-migrate-fl/
+model-migrate-flagos/
 ├── SKILL.md (overview + step index)
 └── references/
     ├── procedure.md (detailed 13-step procedure)
@@ -290,7 +290,7 @@ Every script and reference file must be documented in SKILL.md:
 
 ### Naming
 
-- Directory names: lowercase + hyphens (`model-migrate-fl`, `preflight-check`)
+- Directory names: lowercase + hyphens (`model-migrate-flagos`, `preflight-check`)
 - Script filenames: lowercase + underscores (`validate_migration.py`)
 - Reference docs: lowercase + hyphens (`compatibility-patches.md`)
 - FlagOS skills use functional prefixes describing the action
@@ -299,12 +299,12 @@ Every script and reference file must be documented in SKILL.md:
 
 | Category | Description | Example |
 |---|---|---|
-| `workflow-automation` | Multi-step workflows | model-migrate-fl |
+| `workflow-automation` | Multi-step workflows | model-migrate-flagos |
 | `deployment-verification` | Deployment & environment validation | preflight-check |
 | `build-tooling` | Build & release tools | build-vendor-image |
 | `code-standard` | Coding standards & review | — |
 | `operations` | Operational tasks | — |
-| `developer-tooling` | Developer productivity tools | skill-creator |
+| `developer-tooling` | Developer productivity tools | skill-creator-flagos |
 
 ### Bilingual Support
 

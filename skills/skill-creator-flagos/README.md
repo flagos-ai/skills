@@ -1,10 +1,10 @@
-# skill-creator: Skill Development Toolkit
+# skill-creator-flagos: Skill Development Toolkit
 
 [中文版](README_zh.md)
 
 ## Overview
 
-`skill-creator` is a meta-skill for creating, improving, and validating skills in the FlagOS skills repository.
+`skill-creator-flagos` is a meta-skill for creating, improving, and validating skills in the FlagOS skills repository.
 
 ### Problem Statement
 
@@ -16,25 +16,25 @@ This skill automates the entire skill development lifecycle: **scaffold from tem
 
 ```bash
 # Interactive — asks what you want to do
-/skill-creator
+/skill-creator-flagos
 
 # Scaffold a new skill
-/skill-creator preflight-check --init
+/skill-creator-flagos preflight-check --init
 
 # Scaffold with specific resource directories
-/skill-creator preflight-check --init --resources scripts,references
+/skill-creator-flagos preflight-check --init --resources scripts,references
 
 # Validate a single skill
-/skill-creator model-migrate-fl --validate
+/skill-creator-flagos model-migrate-flagos --validate
 
 # Validate all skills
-/skill-creator --validate
+/skill-creator-flagos --validate
 
 # Improve an existing skill
-/skill-creator model-migrate-fl
+/skill-creator-flagos model-migrate-flagos
 
 # Run test cases against a skill
-/skill-creator model-migrate-fl --eval
+/skill-creator-flagos model-migrate-flagos --eval
 ```
 
 | Argument | Required | Default | Description |
@@ -83,7 +83,7 @@ Intent capture → Interview → Scaffold → Write SKILL.md → Add resources �
 **Example session:**
 
 ```
-You:   /skill-creator preflight-check --init
+You:   /skill-creator-flagos preflight-check --init
 Agent: What should preflight-check do? When should it trigger?
 You:   It checks GPU availability, driver versions, and Python env before running vLLM
 Agent: Got it. I'll scaffold the skill and include a scripts/ directory for the check scripts...
@@ -109,8 +109,8 @@ Agent: Got it. I'll scaffold the skill and include a scripts/ directory for the 
 **Example session:**
 
 ```
-You:   /skill-creator model-migrate-fl
-Agent: I've analyzed model-migrate-fl. Found 3 potential improvements:
+You:   /skill-creator-flagos model-migrate-flagos
+Agent: I've analyzed model-migrate-flagos. Found 3 potential improvements:
        1. Description could be more trigger-friendly
        2. Missing example for multimodal model migration
        3. Troubleshooting table doesn't cover network timeout
@@ -144,12 +144,12 @@ Runs the repository-level `scripts/validate_skills.py` which checks:
 
 ```
 ============================================================
-  model-migrate-fl: PASS
+  model-migrate-flagos: PASS
 ============================================================
     ✓ All checks passed
 
 ============================================================
-  skill-creator: PASS
+  skill-creator-flagos: PASS
 ============================================================
   Warnings (1):
     ⚠ No README.md found (recommended)
@@ -170,7 +170,7 @@ If `evals/evals.json` exists in the skill directory, the agent runs each test pr
 ## Directory Structure
 
 ```
-skills/skill-creator/
+skills/skill-creator-flagos/
 ├── SKILL.md                          # Skill definition (entry point)
 ├── LICENSE.txt                       # Apache 2.0 license
 ├── README.md                         # This document (English)
@@ -250,14 +250,14 @@ python3 init_skill.py "My Cool Skill" --path skills/
 
 ### Repository-Level Validation (`scripts/validate_skills.py`)
 
-Validation is handled by the repository-level script `scripts/validate_skills.py` (not bundled inside skill-creator to avoid duplication). It supports both single-skill and batch validation:
+Validation is handled by the repository-level script `scripts/validate_skills.py` (not bundled inside skill-creator-flagos to avoid duplication). It supports both single-skill and batch validation:
 
 ```bash
 # Validate all skills (default)
 python3 scripts/validate_skills.py
 
 # Validate a single skill
-python3 scripts/validate_skills.py skills/model-migrate-fl
+python3 scripts/validate_skills.py skills/model-migrate-flagos
 
 # Validate all skills in a specific directory
 python3 scripts/validate_skills.py skills/ --all
@@ -273,7 +273,7 @@ Performs 14 checks across two severity levels (error / warning). See the Mode 3 
 
 ```bash
 # Install this skill only
-npx skills add flagos-ai/skills --skill skill-creator -a claude-code
+npx skills add flagos-ai/skills --skill skill-creator-flagos -a claude-code
 
 # Or install all Flagos skills at once
 npx skills add flagos-ai/skills -a claude-code
@@ -284,7 +284,7 @@ npx skills add flagos-ai/skills -a claude-code
 ```bash
 # From your project root
 mkdir -p .claude/skills
-cp -r <path-to-this-repo>/skills/skill-creator .claude/skills/
+cp -r <path-to-this-repo>/skills/skill-creator-flagos .claude/skills/
 ```
 
 ### Standalone Script Usage
@@ -293,7 +293,7 @@ The scripts can be used independently without invoking the skill:
 
 ```bash
 # Scaffold a new skill anywhere
-python3 skills/skill-creator/scripts/init_skill.py my-skill --path ./my-project/skills/
+python3 skills/skill-creator-flagos/scripts/init_skill.py my-skill --path ./my-project/skills/
 
 # Validate skills (repo-level script)
 python3 scripts/validate_skills.py

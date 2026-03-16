@@ -21,10 +21,10 @@ FlagOS Skills 兼容 **Claude Code**、**Cursor**、**Codex** 以及任何支持
 npx skills add flagos-ai/skills --list
 
 # 安装指定 skill 到当前项目
-npx skills add flagos-ai/skills --skill model-migrate-fl
+npx skills add flagos-ai/skills --skill model-migrate-flagos
 
 # 全局安装（用户级别）
-npx skills add flagos-ai/skills --skill model-migrate-fl --global
+npx skills add flagos-ai/skills --skill model-migrate-flagos --global
 
 # 一次安装所有 skills
 npx skills add flagos-ai/skills --all
@@ -83,19 +83,19 @@ claude plugin install flagos-skills@flagos-skills
 在 Codex 中使用 `$skill-installer`：
 
 ```
-$skill-installer install model-migrate-fl from flagos-ai/skills
+$skill-installer install model-migrate-flagos from flagos-ai/skills
 ```
 
 或提供 GitHub 目录 URL：
 
 ```
-$skill-installer install https://github.com/flagos-ai/skills/tree/main/skills/model-migrate-fl
+$skill-installer install https://github.com/flagos-ai/skills/tree/main/skills/model-migrate-flagos
 ```
 
 也可以直接复制 skill 文件夹到 Codex 的标准 `.agents/skills` 目录：
 
 ```bash
-cp -r skills/model-migrate-fl $REPO_ROOT/.agents/skills/
+cp -r skills/model-migrate-flagos $REPO_ROOT/.agents/skills/
 ```
 
 详见 [Codex Skills 指南](https://developers.openai.com/codex/skills/)。
@@ -117,15 +117,15 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
 <!-- BEGIN_SKILLS_TABLE -->
 | 名称 | 分类 | 说明 | 文档 |
 |------|------|------|------|
-| [`model-migrate-fl`](skills/model-migrate-fl/) | workflow-automation | 将上游 vLLM 模型迁移到 vllm-plugin-FL 项目。用于添加新模型支持、移植模型代码或回溯新发布的模型。 | [SKILL.md](skills/model-migrate-fl/SKILL.md) |
+| [`model-migrate-flagos`](skills/model-migrate-flagos/) | workflow-automation | 将上游 vLLM 模型迁移到 vllm-plugin-FL 项目。用于添加新模型支持、移植模型代码或回溯新发布的模型。 | [SKILL.md](skills/model-migrate-flagos/SKILL.md) |
 <!-- END_SKILLS_TABLE -->
 
 ### 在智能体中使用 Skills
 
 安装 skill 后，在提示词中直接提及即可：
 
-- "使用 model-migrate-fl 将 Qwen3-5 模型从上游 vLLM 迁移过来"
-- "/model-migrate-fl qwen3_5"
+- "使用 model-migrate-flagos 将 Qwen3-5 模型从上游 vLLM 迁移过来"
+- "/model-migrate-flagos qwen3_5"
 - "把 DeepSeek-V4 模型移植到 vllm-plugin-FL"
 
 智能体会自动加载对应的 `SKILL.md` 指令和辅助脚本。
@@ -146,7 +146,7 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
 ├── scripts/                 # 仓库级工具脚本
 │   └── validate_skills.py   # 批量验证所有 skills
 ├── skills/                  # Skill 目录
-│   ├── model-migrate-fl/    # 模型迁移工作流
+│   ├── model-migrate-flagos/    # 模型迁移工作流
 │   └── ...
 ├── spec/                    # Agent Skills 规范与本地约定
 │   ├── README.md
@@ -180,7 +180,7 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
 
 | 分类 | 说明 | 示例 |
 |------|------|------|
-| **workflow-automation** | 多步骤流程：模型迁移、厂商对接、E2E 验证 | `model-migrate-fl` |
+| **workflow-automation** | 多步骤流程：模型迁移、厂商对接、E2E 验证 | `model-migrate-flagos` |
 | **deployment** | 环境检查、容器构建、多芯片 CI | — |
 | **enterprise-standards** | 品牌规范、文档模版、代码规范 | — |
 | **tool-integration** | CI/CD、监控系统、内部平台、第三方 SaaS | — |

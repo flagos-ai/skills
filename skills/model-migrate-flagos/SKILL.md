@@ -1,12 +1,12 @@
 ---
-name: model-migrate-fl
+name: model-migrate-flagos
 description: >
   Migrate a model from the latest vLLM upstream repository into the vllm-plugin-FL project
   (pinned at vLLM v0.13.0). Use this skill whenever someone wants to add support for a new
   model to vllm-plugin-FL, port model code from upstream vLLM, or backport a newly released
   model. Trigger when the user says things like "migrate X model", "add X model support",
   "port X from upstream vLLM", "make X work with the FL plugin", or simply
-  "/model-migrate-fl model_name". The model_name argument uses snake_case
+  "/model-migrate-flagos model_name". The model_name argument uses snake_case
   (e.g. qwen3_5, kimi_k25, deepseek_v4).
   Do NOT use for models already supported by vLLM 0.13.0 core, or for
   multimodal-only components that don't need backporting.
@@ -26,7 +26,7 @@ allowed-tools: "Bash(pytest:*) Bash(python3:*) Bash(git:*) Bash(vllm:*) Bash(cp:
 ## Usage
 
 ```
-/model-migrate-fl <model_name> [upstream_folder] [plugin_folder]
+/model-migrate-flagos <model_name> [upstream_folder] [plugin_folder]
 ```
 
 | Argument | Required | Default |
@@ -104,7 +104,7 @@ With placeholders resolved, execute every step in `procedure.md` sequentially. A
 
 **Example 1: Typical new model**
 ```
-User says: "/model-migrate-fl kimi_k25"
+User says: "/model-migrate-flagos kimi_k25"
 Actions:
   1. Parse → model_name=kimi_k25, defaults for upstream/plugin paths
   2. Clone upstream, find vllm/model_executor/models/kimi_k25.py

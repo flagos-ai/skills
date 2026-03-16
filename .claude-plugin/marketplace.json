@@ -13,7 +13,7 @@
       "description": "Agent skills for the FlagOS multi-chip AI inference platform. Includes model migration, environment verification, vendor onboarding, and more.",
       "source": "./",
       "skills": [
-        "./skills/model-migrate-fl"
+        "./skills/model-migrate-flagos"
       ]
     }
   ]

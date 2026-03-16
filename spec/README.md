@@ -26,7 +26,7 @@ Per [agentskills.io/specification](https://agentskills.io/specification):
 
 ### FlagOS Extension Fields
 
-This repository uses the following additional fields beyond the standard (see `model-migrate-fl` skill for reference):
+This repository uses the following additional fields beyond the standard (see `model-migrate-flagos` skill for reference):
 
 | Field | Description | Example |
 |-------|-------------|---------|
@@ -78,7 +78,7 @@ skills/                          # Repository root
 
 - Directory names and `name` fields use lowercase + hyphens: `my-skill-name`
 - Avoid vague names (`misc`, `tmp`, `v1`)
-- FlagOS-related skills should use functional prefixes: `model-migrate-fl`, `preflight-check`
+- FlagOS-related skills should use `-flagos` suffix: `model-migrate-flagos`, `preflight-check-flagos`
 
 #### 3. Skill Internal Structure
 

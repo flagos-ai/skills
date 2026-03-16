@@ -1,10 +1,10 @@
-# model-migrate-fl: vLLM Model Migration Skill
+# model-migrate-flagos: vLLM Model Migration Skill
 
 [中文版](README_zh.md)
 
 ## Overview
 
-`model-migrate-fl` is an AI coding skill that migrates model code from the **latest vLLM upstream** into the **vllm-plugin-FL project** (pinned at vLLM v0.13.0).
+`model-migrate-flagos` is an AI coding skill that migrates model code from the **latest vLLM upstream** into the **vllm-plugin-FL project** (pinned at vLLM v0.13.0).
 
 ### Problem Statement
 
@@ -16,9 +16,9 @@ This skill automates the entire migration workflow: **copy from upstream -> adap
 
 ```bash
 # Invoke in your AI coding assistant
-/model-migrate-fl qwen3_5
-/model-migrate-fl kimi_k25
-/model-migrate-fl glm5 /path/to/upstream /path/to/plugin
+/model-migrate-flagos qwen3_5
+/model-migrate-flagos kimi_k25
+/model-migrate-flagos glm5 /path/to/upstream /path/to/plugin
 ```
 
 | Argument | Required | Default | Description |
@@ -62,7 +62,7 @@ This maximally preserves the upstream implementation and minimizes human error.
 ## Directory Structure
 
 ```
-skills/model-migrate-fl/
+skills/model-migrate-flagos/
 ├── SKILL.md                          # Skill definition (entry point)
 ├── README.md                         # This document (English)
 ├── README_zh.md                      # Chinese version
@@ -254,7 +254,7 @@ Skills are typically placed under `.claude/skills/` (or the equivalent skills di
 
 ```bash
 # Install this skill only
-npx skills add flagos-ai/skills --skill model-migrate-fl -a claude-code
+npx skills add flagos-ai/skills --skill model-migrate-flagos -a claude-code
 
 # Or install all Flagos skills at once
 npx skills add flagos-ai/skills -a claude-code
@@ -265,7 +265,7 @@ npx skills add flagos-ai/skills -a claude-code
 ```bash
 # From vllm-plugin-FL project root
 mkdir -p .claude/skills
-cp -r <path-to-this-repo>/skills/model-migrate-fl .claude/skills/
+cp -r <path-to-this-repo>/skills/model-migrate-flagos .claude/skills/
 ```
 
 ---

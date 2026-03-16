@@ -50,8 +50,8 @@ Before submitting a PR, please verify:
 
 | Scope | Rule | Example |
 |-------|------|---------|
-| Directory name | Lowercase + hyphens | `model-migrate-fl` |
-| `name` field | Must match directory name | `model-migrate-fl` |
+| Directory name | Lowercase + hyphens | `model-migrate-flagos` |
+| `name` field | Must match directory name | `model-migrate-flagos` |
 | Script filenames | Lowercase + underscores | `validate_migration.py` |
 | Reference docs | Lowercase + hyphens | `compatibility-patches.md` |
 
@@ -63,7 +63,7 @@ Avoid:
 
 | Category | Description | Example |
 |----------|-------------|---------|
-| `workflow-automation` | Multi-step workflows | model-migrate-fl |
+| `workflow-automation` | Multi-step workflows | model-migrate-flagos |
 | `deployment-verification` | Deployment & environment validation | preflight-check |
 | `build-tooling` | Build & release tools | build-vendor-image |
 | `code-standard` | Coding standards & review | — |
@@ -76,7 +76,7 @@ Avoid:
 <!-- New Skill | Update Skill | Fix | Infrastructure -->
 
 ### Skill Name
-<!-- e.g., model-migrate-fl -->
+<!-- e.g., model-migrate-flagos -->
 
 ### Description
 <!-- Brief description of changes -->

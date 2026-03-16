@@ -21,10 +21,10 @@ Use the [`skills`](https://www.npmjs.com/package/skills) CLI to install skills d
 npx skills add flagos-ai/skills --list
 
 # Install a specific skill into your project
-npx skills add flagos-ai/skills --skill model-migrate-fl
+npx skills add flagos-ai/skills --skill model-migrate-flagos
 
 # Install a specific skill globally (user-level)
-npx skills add flagos-ai/skills --skill model-migrate-fl --global
+npx skills add flagos-ai/skills --skill model-migrate-flagos --global
 
 # Install all skills at once
 npx skills add flagos-ai/skills --all
@@ -83,19 +83,19 @@ Install from the repository URL or local checkout via the Cursor plugin flow.
 Use the `$skill-installer` inside Codex:
 
 ```
-$skill-installer install model-migrate-fl from flagos-ai/skills
+$skill-installer install model-migrate-flagos from flagos-ai/skills
 ```
 
 Or provide the GitHub directory URL:
 
 ```
-$skill-installer install https://github.com/flagos-ai/skills/tree/main/skills/model-migrate-fl
+$skill-installer install https://github.com/flagos-ai/skills/tree/main/skills/model-migrate-flagos
 ```
 
 Alternatively, copy skill folders into Codex's standard `.agents/skills` location:
 
 ```bash
-cp -r skills/model-migrate-fl $REPO_ROOT/.agents/skills/
+cp -r skills/model-migrate-flagos $REPO_ROOT/.agents/skills/
 ```
 
 See the [Codex Skills guide](https://developers.openai.com/codex/skills/) for more details.
@@ -117,15 +117,15 @@ For any agent that supports the [Agent Skills standard](https://agentskills.io/s
 <!-- BEGIN_SKILLS_TABLE -->
 | Name | Category | Description | Docs |
 |------|----------|-------------|------|
-| [`model-migrate-fl`](skills/model-migrate-fl/) | workflow-automation | Migrate a model from upstream vLLM into the vllm-plugin-FL project. Use when adding new model support, porting model code, or backporting newly released models. | [SKILL.md](skills/model-migrate-fl/SKILL.md) |
+| [`model-migrate-flagos`](skills/model-migrate-flagos/) | workflow-automation | Migrate a model from upstream vLLM into the vllm-plugin-FL project. Use when adding new model support, porting model code, or backporting newly released models. | [SKILL.md](skills/model-migrate-flagos/SKILL.md) |
 <!-- END_SKILLS_TABLE -->
 
 ### Using skills in your agent
 
 Once a skill is installed, mention it directly in your prompt:
 
-- "Use model-migrate-fl to migrate the Qwen3-5 model from upstream vLLM"
-- "/model-migrate-fl qwen3_5"
+- "Use model-migrate-flagos to migrate the Qwen3-5 model from upstream vLLM"
+- "/model-migrate-flagos qwen3_5"
 - "Port the DeepSeek-V4 model to vllm-plugin-FL"
 
 Your agent automatically loads the corresponding `SKILL.md` instructions and helper scripts.
@@ -146,7 +146,7 @@ Your agent automatically loads the corresponding `SKILL.md` instructions and hel
 ├── scripts/                 # Repository-level utility scripts
 │   └── validate_skills.py   # Batch validate all skills
 ├── skills/                  # Skill directories
-│   ├── model-migrate-fl/    # Model migration workflow
+│   ├── model-migrate-flagos/    # Model migration workflow
 │   └── ...
 ├── spec/                    # Agent Skills standard & local conventions
 │   ├── README.md
@@ -180,7 +180,7 @@ See [contributing.md](contributing.md) for the full contribution guide.
 
 | Category | Description | Examples |
 |----------|-------------|----------|
-| **workflow-automation** | Multi-step processes: model migration, vendor onboarding, E2E validation | `model-migrate-fl` |
+| **workflow-automation** | Multi-step processes: model migration, vendor onboarding, E2E validation | `model-migrate-flagos` |
 | **deployment** | Environment checks, container builds, multi-chip CI | — |
 | **enterprise-standards** | Brand guidelines, doc templates, code standards | — |
 | **tool-integration** | CI/CD, monitoring, internal platforms, third-party SaaS | — |

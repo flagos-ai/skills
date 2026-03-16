@@ -8,7 +8,7 @@ Usage:
 
 Examples:
     python3 scripts/validate_skills.py
-    python3 scripts/validate_skills.py skills/model-migrate-fl
+    python3 scripts/validate_skills.py skills/model-migrate-flagos
     python3 scripts/validate_skills.py skills/ --all
 """
 from __future__ import annotations
