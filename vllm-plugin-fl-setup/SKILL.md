@@ -35,12 +35,29 @@ nvidia-smi
 
 # Huawei NPU
 npu-smi info
+
+# Moore Threads GPU
+mthreads-gmi
 ```
 
 ### Step 2: Install vLLM-Plugin-FL
 
+First create a workspace directory and try cloning the source code:
+
 ```bash
+mkdir -p ~/flagos-workspace && cd ~/flagos-workspace
 git clone https://github.com/flagos-ai/vllm-plugin-FL
+```
+
+If `git clone` fails due to network issues, search the machine for an existing local copy:
+
+```bash
+find / -maxdepth 5 -type d -name "vllm-plugin-FL" 2>/dev/null
+```
+
+Then install from the source directory (cloned or found):
+
+```bash
 cd vllm-plugin-FL
 pip install -r requirements.txt
 pip install --no-build-isolation .
@@ -56,12 +73,26 @@ python -c "import vllm_fl; print('vllm-plugin-FL installed successfully')"
 
 ### Step 3: Install FlagGems
 
+> **Ascend NPU users:** Before installing FlagGems, you **must** first install FlagTree. See [references/npu.md](references/npu.md) and complete the FlagTree installation step there before proceeding. Otherwise the FlagGems verification will fail repeatedly and keep reinstalling Triton.
+
 ```bash
 # Install build dependencies
 pip install -U scikit-build-core==0.11 pybind11 ninja cmake
 
-# Install FlagGems
+# Clone FlagGems source code
+cd ~/flagos-workspace
 git clone https://github.com/flagos-ai/FlagGems
+```
+
+If `git clone` fails due to network issues, search the machine for an existing local copy:
+
+```bash
+find / -maxdepth 5 -type d -name "FlagGems" 2>/dev/null
+```
+
+Then install from the source directory (cloned or found):
+
+```bash
 cd FlagGems
 pip install --no-build-isolation .
 ```
@@ -79,7 +110,19 @@ FlagCX is a unified communication library for multi-device distributed inference
 > **Note:** Ascend NPU does not need FlagCX — skip this step for Ascend backends.
 
 ```bash
+cd ~/flagos-workspace
 git clone https://github.com/flagos-ai/FlagCX.git
+```
+
+If `git clone` fails due to network issues, search the machine for an existing local copy:
+
+```bash
+find / -maxdepth 5 -type d -name "FlagCX" 2>/dev/null
+```
+
+Then build and install from the source directory (cloned or found):
+
+```bash
 cd FlagCX
 git checkout -b v0.9.0
 git submodule update --init --recursive
@@ -111,7 +154,7 @@ Some hardware backends require additional setup. See the corresponding reference
 | Iluvatar GPU | Iluvatar | TBD |
 | Pingtouge-Zhenwu | Pingtouge | TBD |
 | Tsingmicro | Tsingmicro | TBD |
-| Moore Threads GPU | Moore Threads | TBD |
+| Moore Threads GPU | Moore Threads | [references/mthreads_gpu.md](references/mthreads_gpu.md) |
 | Hygon DCU | Hygon | TBD |
 
 ## Quick Test
@@ -126,6 +169,12 @@ Some hardware backends require additional setup. See the corresponding reference
    ```bash
    export VLLM_PLUGINS='fl'
    ```
+   For **Moore Threads GPU**, also set:
+   ```bash
+   export USE_FLAGGEMS=1
+   export FLAGCX_PATH=/workspace/FlagCX  # MUST point to the actual FlagCX installation directory; this is only an example
+   export VLLM_MUSA_ENABLE_MOE_TRITON=1
+   ```
 5. Once a valid model path is resolved, run offline batched inference to verify the full stack:
 
 ```python
@@ -136,6 +185,9 @@ prompts = [
     "Hello, my name is",
 ]
 sampling_params = SamplingParams(max_tokens=10, temperature=0.0)
+
+# For Moore Threads GPU, add: enforce_eager=True, block_size=64, attention_config={"backend": "TORCH_SDPA"}
+# Also: do NOT run from /workspace directory
 llm = LLM(model=model_path, max_num_batched_tokens=16384, max_num_seqs=2048)
 outputs = llm.generate(prompts, sampling_params)
 for output in outputs:
@@ -161,18 +213,11 @@ llm = LLM(model="...", gpu_memory_utilization=0.8)
 
 **Ascend-specific issues**: See [references/npu.md](references/npu.md) for Ascend NPU troubleshooting, including FlagTree setup and eager execution requirements.
 
-**Cannot connect to GitHub**: If `git clone` fails due to network issues, search the machine for previously cloned repositories and install from local copies:
-
-```bash
-# Search for existing clones of the required repos
-find / -maxdepth 5 -type d \( -name "vllm-plugin-FL" -o -name "FlagGems" -o -name "FlagCX" \) 2>/dev/null
-```
-
-Then `cd` into the found directory and run the same install commands (e.g. `pip install --no-build-isolation .`) as described in the installation steps above.
+**Cannot connect to GitHub**: Each installation step already includes a fallback to search for existing local copies when `git clone` fails. Follow the `find` commands in Step 2, 3, and 4 to locate previously cloned repositories.
 
 ## References
 
 - [vLLM-Plugin-FL GitHub](https://github.com/flagos-ai/vllm-plugin-FL)
 - [FlagGems GitHub](https://github.com/flagos-ai/FlagGems)
 - [FlagCX GitHub](https://github.com/flagos-ai/FlagCX)
-- For backend-specific setup, see [references/npu.md](references/npu.md) and other backend references in Step 5
+- For backend-specific setup, see [references/npu.md](references/npu.md) and other backend references in the Backend-Specific Setup step
