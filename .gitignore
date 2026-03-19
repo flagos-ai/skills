@@ -1,0 +1,20 @@
+# 通用
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+
+# Node / 前端
+node_modules/
+dist/
+build/
+
+# 编辑器 / IDE
+.idea/
+.vscode/
+
