@@ -127,6 +127,11 @@ def validate_skill(skill_dir: Path) -> tuple[list[str], list[str]]:
             errors.append(
                 f"{skill_dir.name}: name '{name}' does not match directory name"
             )
+        if not name.endswith("-flagos"):
+            errors.append(
+                f"{skill_dir.name}: name '{name}' must end with '-flagos' suffix "
+                f"(e.g., '{name}-flagos')"
+            )
 
     # Validate description
     desc = fields.get("description", "")
