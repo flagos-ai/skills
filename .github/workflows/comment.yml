@@ -1,0 +1,72 @@
+name: Comment Validation Results
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  pull-requests: write
+  actions: read
+
+jobs:
+  comment:
+    name: Post Validation Comment
+    runs-on: ubuntu-latest
+    if: github.event.workflow_run.event == 'pull_request'
+    steps:
+      - name: Download validation artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: validation-result
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const result = fs.readFileSync('./validation-output.txt', 'utf8').trim();
+            const exitCode = fs.readFileSync('./validation-exit-code.txt', 'utf8').trim();
+            const prNumber = parseInt(fs.readFileSync('./pr-number.txt', 'utf8').trim(), 10);
+
+            const passed = exitCode === '0';
+            const icon = passed ? '✅' : '❌';
+            const title = passed ? 'All checks passed' : 'Validation failed';
+
+            const body = [
+              `## ${icon} Skill Validation: ${title}`,
+              '',
+              '```',
+              result,
+              '```',
+            ].join('\n');
+
+            // Find and update existing bot comment, or create new one
+            const marker = '## ✅ Skill Validation:';
+            const markerFail = '## ❌ Skill Validation:';
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+            const existing = comments.find(c =>
+              c.body.startsWith(marker) || c.body.startsWith(markerFail)
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }

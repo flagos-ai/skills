@@ -22,7 +22,24 @@ jobs:
           python-version: "3.11"
 
       - name: Run skill validation
-        run: python3 scripts/validate_skills.py
+        run: |
+          set +e
+          python3 scripts/validate_skills.py > validation-output.txt 2>&1
+          exit_code=$?
+          cat validation-output.txt
+
+          # Write result to Job Summary (visible in PR checks tab)
+          if [ "$exit_code" -eq 0 ]; then
+            echo "## ✅ Skill Validation: All checks passed" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## ❌ Skill Validation: Validation failed" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          cat validation-output.txt >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+          exit $exit_code
 
   # ── Add future check jobs below ──────────────────────────
   # Example:
