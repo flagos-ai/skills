@@ -1,26 +1,10 @@
 # Additional Steps for Moore Threads GPU
 
-If using Moore Threads GPU, the following extra configuration applies on top of the main workflow. All source code repositories use the same `flagos-ai` GitHub organization as other backends — no separate forks are needed.
-
-## Installation Differences from NVIDIA
-
-The main workflow (Steps 2–4) applies as-is with one difference:
-
-### FlagCX Build Flag (Step 4)
-
-When building FlagCX, use `USE_MUSA=1` instead of `USE_NVIDIA=1`, and set the adaptor to `musa`:
-
-```bash
-# In the FlagCX directory (from Step 4 of the main workflow)
-make USE_MUSA=1
-
-cd plugin/torch/
-FLAGCX_ADAPTOR=musa pip install --no-build-isolation .
-```
+If using Moore Threads GPU, the following extra configuration applies on top of the main workflow.
 
 ## Environment Variables
 
-These must be set **in addition to** the standard `VLLM_PLUGINS='fl'` before launching vLLM:
+These must be set **in addition to** the standard vLLM-Plugin-FL environment variables before launching vLLM:
 
 ```bash
 export USE_FLAGGEMS=1
