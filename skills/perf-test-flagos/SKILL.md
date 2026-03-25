@@ -1,5 +1,5 @@
 ---
-name: perf-test
+name: perf-test-flagos
 description: |
   Run accuracy benchmarks (FlagEval, when available) and performance benchmarks
   (vllm bench serve) against a served model. Covers 5 workload profiles: short/long

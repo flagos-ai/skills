@@ -1,5 +1,5 @@
 ---
-name: model-verify
+name: model-verify-flagos
 description: |
   Verify the serving stack with a user-specified target model. Runs twice: first with
   FlagGems/FlagCX disabled (isolate model-specific errors), then with full multi-chip

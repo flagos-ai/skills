@@ -1,5 +1,5 @@
 ---
-name: gpu-container-setup
+name: gpu-container-setup-flagos
 description: |
   Automatically detect GPU vendor, find appropriate PyTorch container image,
   launch with correct mounts, and validate GPU functionality. Supports NVIDIA,

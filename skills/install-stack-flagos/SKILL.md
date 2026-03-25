@@ -1,5 +1,5 @@
 ---
-name: install-stack
+name: install-stack-flagos
 description: |
   Install the 5-package multi-chip software stack (vLLM, FlagTree, FlagGems, FlagCX,
   vllm-plugin-FL) inside a GPU container. Handles network mirror detection, dependency

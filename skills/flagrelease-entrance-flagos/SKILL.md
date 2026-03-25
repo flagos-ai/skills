@@ -1,5 +1,5 @@
 ---
-name: flagrelease
+name: flagrelease-entrance-flagos
 description: |
   Full FlagRelease pipeline orchestrator. Runs the complete LLM deployment, verification,
   and benchmarking pipeline for multi-chip GPU backends. Executes: install-stack →
