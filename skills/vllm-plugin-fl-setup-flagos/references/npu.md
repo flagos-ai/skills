@@ -1,17 +1,33 @@
 # Additional Steps for Ascend NPU
 
-If using Huawei Ascend NPU, the following extra configuration applies on top of the main workflow.
+If using Huawei Ascend NPU, the following extra steps are required. **The FlagTree installation below must be completed before installing or verifying FlagGems (Step 3 in the main workflow).** If FlagTree is not installed first, the FlagGems verification will fail repeatedly and keep reinstalling Triton.
 
-## Dependency Ordering Constraint
+## Install FlagTree (before FlagGems)
 
-FlagTree must be installed **before** FlagGems. If FlagTree is not installed first, the FlagGems verification will fail repeatedly. Refer to the vLLM-Plugin-FL README for the FlagTree repository URL and installation instructions.
+> **Important:** This step must be done **before** proceeding to Step 3 (Install FlagGems) in the main workflow.
 
-## Environment Variables
+```bash
+RES="--index-url=https://resource.flagos.net/repository/flagos-pypi-hosted/simple --trusted-host=https://resource.flagos.net"
+pip install flagtree==0.4.0+ascend3.2 $RES
+```
+
+Verify FlagTree installation:
+
+```bash
+python -c "import flagtree; print('FlagTree installed successfully')"
+```
+
+## Set Environment Variables
 
 ```bash
 export TRITON_ALL_BLOCKS_PARALLEL=1
 ```
 
-## Inference Notes
+## Enable Eager Execution
 
 Ascend requires eager execution. Add `enforce_eager=True` to the `LLM` constructor or pass `--enforce-eager` on the command line.
+
+```python
+from vllm import LLM
+llm = LLM(model="Qwen/Qwen3-4B", enforce_eager=True)
+```

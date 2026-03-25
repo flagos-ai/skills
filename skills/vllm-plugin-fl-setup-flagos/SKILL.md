@@ -11,7 +11,7 @@ argument-hint: "[backend]"
 user-invocable: false
 compatibility: "Linux (Ubuntu 20.04+), Python 3.10+, vLLM v0.13.0, GPU with appropriate drivers"
 metadata:
-  version: "2.0.0"
+  version: "1.0.0"
   author: flagos-ai
   category: environment-setup
   tags: [vllm, vllm-plugin-fl, flaggems, flagcx, setup, installation]
@@ -43,41 +43,124 @@ python -c "import vllm; print(vllm.__version__)"
 
 ### Step 1: Identify Hardware Backend
 
-Detect the hardware platform on the current machine. Try common device management CLI tools for known chip vendors (e.g. NVIDIA, Huawei Ascend, Moore Threads, Iluvatar, etc.) to determine which backend is available. If uncertain, ask the user what hardware they are using.
+```bash
+# NVIDIA GPU
+nvidia-smi
 
-Record the detected backend — it will be needed when the dependency READMEs ask you to choose platform-specific options.
+# Huawei NPU
+npu-smi info
 
-### Step 2: Clone vLLM-Plugin-FL and Read Its README
+# Moore Threads GPU
+mthreads-gmi
+
+# Iluvatar GPU
+ixsmi
+```
+
+### Step 2: Install vLLM-Plugin-FL
+
+First create a workspace directory and try cloning the source code:
 
 ```bash
 mkdir -p ~/flagos-workspace && cd ~/flagos-workspace
 git clone https://github.com/flagos-ai/vllm-plugin-FL
 ```
 
-If `git clone` fails due to network issues, ask the user for their network proxy settings (e.g. `http_proxy` / `https_proxy`), configure the proxy, then retry.
+If `git clone` fails due to network issues, ask the user for their network proxy settings (e.g. `http_proxy` / `https_proxy`), configure the proxy, then retry the clone.
 
-**After cloning, read the repository's `README.md` carefully.** The README is the single source of truth for:
-- How to install vLLM-Plugin-FL itself (e.g. `pip install` commands, required environment variables).
-- The list of dependencies (e.g. FlagGems, FlagCX, FlagTree, etc.) and their GitHub repository URLs.
-- Any ordering constraints between dependencies (e.g. "install X before Y").
-- Backend-specific notes or environment variable requirements.
+Then install from the source directory:
 
-Follow the README's instructions to install vLLM-Plugin-FL first, then proceed to install each dependency it lists.
+```bash
+cd vllm-plugin-FL
+pip install -r requirements.txt
+pip install --no-build-isolation .
+# Required to enable vLLM-Plugin-FL when running vLLM
+export VLLM_PLUGINS='fl'
+```
 
-### Step 3: Install Each Dependency by Following Its Own README
+Verify vLLM-Plugin-FL installation:
 
-For **each dependency** listed in the vLLM-Plugin-FL README:
+```bash
+python -c "import vllm_fl; print('vllm-plugin-FL installed successfully')"
+```
 
-1. **Clone** the dependency repository using the URL from the README.
-2. **Read the dependency's own `README.md`** to find installation instructions, build flags, and platform-specific options for the detected backend.
-3. **Follow those instructions** to build and install the dependency, selecting the correct backend/platform options identified in Step 1.
-4. **Verify** the installation succeeds (the dependency README usually provides a verification command or import check — use it).
+### Step 3: Install FlagGems
 
-> **Important:** Respect any ordering constraints stated in the vLLM-Plugin-FL README (e.g. if it says "install A before B", do so). If a dependency's README references further sub-dependencies, follow the same clone-read-install pattern recursively.
+> **Ascend NPU users:** Before installing FlagGems, you **must** first install FlagTree. See [references/npu.md](references/npu.md) and complete the FlagTree installation step there before proceeding. Otherwise the FlagGems verification will fail repeatedly and keep reinstalling Triton.
 
-### Step 4: Backend-Specific Setup
+```bash
+# Install build dependencies
+pip install -U scikit-build-core==0.11 pybind11 ninja cmake
 
-Some hardware backends require additional configuration beyond what the upstream READMEs cover. Scan the [references/](references/) directory in this skill for any document that matches the detected backend. If a matching reference file exists, read it and apply the additional steps it describes (extra environment variables, build flags, execution constraints, etc.).
+# Clone FlagGems source code
+cd ~/flagos-workspace
+git clone https://github.com/flagos-ai/FlagGems
+```
+
+If `git clone` fails due to network issues, ask the user for their network proxy settings (e.g. `http_proxy` / `https_proxy`), configure the proxy, then retry the clone.
+
+Then install from the source directory:
+
+```bash
+cd FlagGems
+pip install --no-build-isolation .
+```
+
+Verify FlagGems installation:
+
+```bash
+python -c "import flag_gems; print('FlagGems installed successfully')"
+```
+
+### Step 4: (Optional) Install FlagCX
+
+FlagCX is a unified communication library for multi-device distributed inference, supporting both homogeneous and heterogeneous setups. Skip this step if running on a single device.
+
+> **Note:** Ascend NPU does not need FlagCX — skip this step for Ascend backends.
+
+```bash
+cd ~/flagos-workspace
+git clone https://github.com/flagos-ai/FlagCX.git
+```
+
+If `git clone` fails due to network issues, ask the user for their network proxy settings (e.g. `http_proxy` / `https_proxy`), configure the proxy, then retry the clone.
+
+Then build and install from the source directory:
+
+```bash
+cd FlagCX
+git checkout -b v0.9.0
+git submodule update --init --recursive
+
+# Build for your platform (e.g. USE_NVIDIA=1 for NVIDIA)
+make USE_NVIDIA=1
+
+export FLAGCX_PATH="$PWD"
+
+# Install Python binding (replace [xxx] with your platform: nvidia, ascend, etc.)
+cd plugin/torch/
+FLAGCX_ADAPTOR=[xxx] pip install --no-build-isolation .
+```
+
+Verify FlagCX installation:
+
+```bash
+python -c "import flagcx; print('FlagCX installed successfully')"
+```
+
+### Step 5: Backend-Specific Setup
+
+Some hardware backends require additional setup. See the corresponding reference document:
+
+| Backend | Chip Vendor | Reference |
+|---------|-------------|-----------|
+| Ascend NPU | Huawei | [references/npu.md](references/npu.md) |
+| MetaX GPU | MetaX | TBD |
+| Iluvatar GPU (BI-V150) | Iluvatar | [references/iluvatar_gpu.md](references/iluvatar_gpu.md) |
+| Pingtouge-Zhenwu | Pingtouge | TBD |
+| Tsingmicro | Tsingmicro | TBD |
+| Moore Threads GPU | Moore Threads | [references/mthreads_gpu.md](references/mthreads_gpu.md) |
+| Hygon DCU | Hygon | TBD |
 
 ## Quick Test
 
@@ -86,23 +169,38 @@ Some hardware backends require additional configuration beyond what the upstream
    ```bash
    find / -maxdepth 5 -type d -name "<user_provided_model_name>" 2>/dev/null
    ```
-3. If found, use the discovered path. If not found, ask the user to provide a different model name or a full local path. If after 3 attempts no valid model is found, skip the quick test and inform the user to prepare a model before retrying.
-4. Set any environment variables required by the vLLM-Plugin-FL README and the backend-specific reference document (e.g. `VLLM_PLUGINS`, `FLAGCX_PATH`, etc.).
-5. Run offline batched inference to verify the full stack. Adapt `LLM` constructor parameters based on the backend-specific reference document (e.g. `enforce_eager`, `block_size`, `attention_config`):
+3. If found, use the discovered path. If not found, tell the user and ask them to provide a different model name or a full local path, then repeat the search. If after 3 attempts no valid model is found, skip the quick test and inform the user to prepare a model before retrying.
+4. Ensure the FL plugin is enabled before running inference:
+   ```bash
+   export VLLM_PLUGINS='fl'
+   ```
+   For **Moore Threads GPU**, also set:
+   ```bash
+   export USE_FLAGGEMS=1
+   export FLAGCX_PATH=/workspace/FlagCX  # MUST point to the actual FlagCX installation directory; this is only an example
+   export VLLM_MUSA_ENABLE_MOE_TRITON=1
+   ```
+5. Once a valid model path is resolved, run offline batched inference to verify the full stack:
 
 ```python
 from vllm import LLM, SamplingParams
 
 model_path = "<resolved_model_path>"
-prompts = ["Hello, my name is"]
+prompts = [
+    "Hello, my name is",
+]
 sampling_params = SamplingParams(max_tokens=10, temperature=0.0)
 
-# Add backend-specific LLM parameters as documented in the reference files
+# For Moore Threads GPU, add: enforce_eager=True, block_size=64, attention_config={"backend": "TORCH_SDPA"}
+# For Iluvatar BI-V150, add: enforce_eager=True
 llm = LLM(model=model_path, max_num_batched_tokens=16384, max_num_seqs=2048)
 outputs = llm.generate(prompts, sampling_params)
 for output in outputs:
-    print(f"Prompt: {output.prompt!r}, Generated text: {output.outputs[0].text!r}")
+    prompt = output.prompt
+    generated_text = output.outputs[0].text
+    print(f"Prompt: {prompt!r}, Generated text: {generated_text!r}")
 ```
+
 
 ## Troubleshooting
 
@@ -112,17 +210,19 @@ from vllm import LLM
 llm = LLM(model="...", gpu_memory_utilization=0.8)
 ```
 
-**Dependency build failures**: Re-read the dependency's README for build prerequisites. Common missing items include C++17-compatible compilers and Python build tools (`scikit-build-core`, `pybind11`, `ninja`, `cmake`).
+**FlagGems build failures**: Ensure build dependencies are installed (`scikit-build-core`, `pybind11`, `ninja`, `cmake`). Check that your compiler supports C++17.
 
-**Plugin not loaded**: If vLLM does not use the FL plugin, verify that the environment variable specified in the vLLM-Plugin-FL README is set (e.g. `VLLM_PLUGINS='fl'`).
+**Plugin not loaded**: If vLLM does not use the FL plugin, verify that `VLLM_PLUGINS='fl'` is set in your environment.
 
-**Communication library errors**: Re-check the communication library's README for correct build flags and `PATH` variable setup for your platform.
+**FlagCX communication errors**: Ensure `FLAGCX_PATH` is correctly set and the library was built for your platform. For NVIDIA, verify with `make USE_NVIDIA=1`.
 
-**Backend-specific issues**: See the [references/](references/) directory for hardware-specific troubleshooting.
+**Ascend-specific issues**: See [references/npu.md](references/npu.md) for Ascend NPU troubleshooting, including FlagTree setup and eager execution requirements.
 
 **Cannot connect to GitHub**: Ask the user for their network proxy settings (e.g. `http_proxy` / `https_proxy`), configure the proxy, then retry the `git clone` command.
 
 ## References
 
 - [vLLM-Plugin-FL GitHub](https://github.com/flagos-ai/vllm-plugin-FL)
-- For non-NVIDIA chips, refer to the [references/](references/) directory for hardware-specific configurations and setup instructions
+- [FlagGems GitHub](https://github.com/flagos-ai/FlagGems)
+- [FlagCX GitHub](https://github.com/flagos-ai/FlagCX)
+- For non-NVIDIA chips, refer to the [references](references/) directory for hardware-specific configurations and setup instructions
