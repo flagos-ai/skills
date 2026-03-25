@@ -129,7 +129,7 @@ Then build and install from the source directory:
 
 ```bash
 cd FlagCX
-git checkout -b v0.9.0
+
 git submodule update --init --recursive
 
 # Build for your platform (e.g. USE_NVIDIA=1 for NVIDIA)
