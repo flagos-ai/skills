@@ -117,28 +117,29 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
 <!-- BEGIN_SKILLS_TABLE -->
 | 大分类 | 小分类 | Skill | 说明 |
 |--------|--------|-------|------|
-| **推理与服务** | 模型迁移 | [`model-migrate-flagos`](skills/model-migrate-flagos/) | 将上游 vLLM 模型迁移到 vllm-plugin-FL（锁定 v0.13.0）。自动化 13 步 copy-then-patch 流程，含 E2E 精度验证。 |
-| | 服务部署 | [PR #6 `flagrelease`](https://github.com/flagos-ai/skills/pull/6) | 在多芯片环境中部署和配置 vLLM-FL / SGLang-FL 推理服务。 |
-| | 环境预检 | *待开发* | 推理前检查 GPU/加速卡可用性、驱动版本、Python 环境及芯片兼容性。 |
-| **训练与 RLHF** | 训练迁移 | *待开发* | 将训练脚本适配到 FlagScale / Megatron-LM-FL，支持多芯片。 |
-| | RLHF 流水线 | *待开发* | 搭建和调试 verl-FL 强化学习工作流。 |
-| **算子与编译器** | TLE 原语开发 | [PR #2 `tle-developer`](https://github.com/flagos-ai/skills/pull/2) | 开发 TLE（Triton Language Extensions）原语，利用 TLE-Lite / TLE-Struct / TLE-Raw 三级扩展在 FlagTree 各后端构建算子。 |
-| | 算子性能优化 | *待开发* | 基于已有 FlagGems / FlagAttention 算子版本，提供性能剖析、瓶颈分析和优化建议，引导持续迭代调优。 |
-| | 算子生成 | [PR #10 `kernelgen`](https://github.com/flagos-ai/skills/pull/10) | 通过 KernelGen MCP 通用算子生成，支持多芯片目标（NVIDIA、昇腾、寒武纪、摩尔线程、天数智芯等）。 |
-| | 算子生成（FlagGems） | [PR #10 `kernelgen-for-flaggems`](https://github.com/flagos-ai/skills/pull/10) | FlagGems 专用算子生成，含 promotion 规则、`pointwise_dynamic` 封装和 `_FULL_CONFIG` 注册。 |
-| | 算子生成（vLLM） | [PR #10 `kernelgen-for-vllm`](https://github.com/flagos-ai/skills/pull/10) | vLLM 专用算子生成，含 SPDX 头、`vllm.logger`、`@triton.autotune` 和自定义算子注册。 |
-| | KernelGen 反馈 | [PR #10 `kernelgen-submit-feedback`](https://github.com/flagos-ai/skills/pull/10) | 以结构化 GitHub Issue 提交 KernelGen 的 Bug 报告和改进建议。 |
-| | 异常算子诊断 | *待开发* | 为 FlagOS 技术栈诊断异常算子——定位精度错误、性能回退和后端特定故障，跨芯片排查。 |
-| | 编译器后端适配 | *待开发* | 为新 AI 芯片架构移植和调试 FlagTree / Triton 编译器后端。 |
-| **通信** | 集合通信 | *待开发* | 适配和基准测试 FlagCX 跨芯片通信原语（AllReduce、AllGather、Send/Recv 等），覆盖 11+ 后端（NCCL、IXCCL、CNCL、MCCL 等）。 |
-| **评测与基准** | 性能评测 | [PR #6 `perf-test`](https://github.com/flagos-ai/skills/pull/6) | 运行和分析 FlagPerf 基准测试，生成多维度跨芯片对比报告（吞吐、显存、扩展性）。 |
-| | E2E 精度验证 | [PR #6 `model-verify`](https://github.com/flagos-ai/skills/pull/6) | 不同推理后端或芯片目标间的 token 级精度对比验证。 |
-| **环境与部署** | 软件栈安装 | [PR #6 `install-stack`](https://github.com/flagos-ai/skills/pull/6) | 在目标芯片上一键安装 FlagOS 软件栈——自动检测硬件、解析依赖、配置完整工具链（FlagTree + FlagGems + vLLM-FL + FlagCX）。 |
-| | 基础镜像选型 | [PR #5 `gpu-container-setup`](https://github.com/flagos-ai/skills/pull/5) | 为国产 AI 芯片模型部署推荐最优基础 Docker 镜像——匹配芯片型号、驱动版本、CUDA/SDK 兼容性和框架需求。 |
-| | 容器构建 | *待开发* | 构建含正确驱动和库依赖的多芯片 Docker 镜像。 |
-| | CI 流水线 | *待开发* | 配置和调试 FlagOps 多芯片构建矩阵的 CI/CD 流水线。 |
-| **开发者工具** | Skill 开发 | [`skill-creator-flagos`](skills/skill-creator-flagos/) | 创建、改进和验证本仓库中的 skill。支持脚手架、规范检查和测试用例评估。 |
-| | 芯片对接 | *待开发* | 引导新芯片厂商完成 FlagOS 全流程适配。 |
+| **部署与发布** | 基础镜像选型 | [`gpu-container-setup-flagos`](skills/gpu-container-setup-flagos/) | 自动检测 GPU 厂商，查找合适的 PyTorch 容器镜像，启动正确的挂载配置，并验证 GPU 功能。支持 NVIDIA、昇腾、Metax、天数智芯和 AMD/ROCm。当用户说"setup container"、"start pytorch container"或调用 /gpu-container-setup 时使用。 |
+|  | 模型迁移 | [`model-migrate-flagos`](skills/model-migrate-flagos/) | 将上游最新 vLLM 仓库的模型迁移到 vllm-plugin-FL 项目（锁定 vLLM v0.13.0）。当用户想要为 vllm-plugin-FL 添加新模型支持、从上游 vLLM 移植模型代码或 backport 新发布的模型时使用。触发词如 "migrate X model"、"add X model support"、"port X from upstream vLLM"、"make X work with the FL plugin" 或直接 "/model-migrate-flagos model_name"。model_name 使用 snake_case（如 qwen3_5、kimi_k25、deepseek_v4）。不适用于 vLLM 0.13.0 核心已支持的模型，或不需要 backport 的纯多模态组件。 |
+|  | 发布流水线 | [`flagrelease-entrance-flagos`](skills/flagrelease-entrance-flagos/) | 完整的 FlagRelease 流水线编排器。针对多芯片 GPU 后端运行完整的 LLM 部署、验证和基准测试流水线。按序执行：install-stack → env-verify → model-verify → perf-test，在步骤间传递状态并生成最终结构化报告。假设 gpu-container-setup（步骤1）已完成 — 必须有一个运行中的 PyTorch + GPU 访问的容器。 |
+|  | 软件栈安装 | [`install-stack-flagos`](skills/install-stack-flagos/) | 在 GPU 容器内安装 5 包多芯片软件栈（vLLM、FlagTree、FlagGems、FlagCX、vllm-plugin-FL）。处理网络镜像检测、依赖排序、wheel 选择和逐包验证。在 gpu-container-setup 产生运行中的 PyTorch + GPU 访问容器后使用。 |
+| **基准测试与评测** | 精度与性能测试 | [`perf-test-flagos`](skills/perf-test-flagos/) | 对已服务的模型运行精度基准测试（FlagEval，可用时）和性能基准测试（vllm bench serve）。覆盖 5 种工作负载配置：短/长 prefill × 短/长 decode + 高并发。收集吞吐量、延迟、TTFT、TPOT 指标。 |
+|  | 部署 A/B 验证 | [`model-verify-flagos`](skills/model-verify-flagos/) | 使用用户指定的目标模型验证服务栈。运行两次：首次禁用 FlagGems/FlagCX（隔离模型特定错误），然后启用完整多芯片栈。对比两次运行以定位故障来自哪一层。 |
+|  | FlagPerf 用例创建 | *规划中* | 为新模型/芯片基准测试用例生成 FlagPerf 兼容的目录结构、配置文件、运行脚本和预期指标基线。 |
+|  | 部署后自动评测 | *规划中* | 模型部署后自动触发评测，跟踪评测状态，失败时报错，完成后推送结果通知。 |
+| **算子与内核开发** | 复杂算子开发 | *规划中* | 为多步骤融合算子（fused attention、fused MoE 等）生成骨架代码，处理共享内存 tiling 策略和多后端分支。 |
+|  | 实验性算子推广 | *规划中* | 扫描 FlagGems 约130个实验性算子，检查测试覆盖率，对齐签名，完成 `_FULL_CONFIG` 注册，生成迁移 PR 将其推广为主算子。 |
+|  | FlagGems 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-for-flaggems.md) | FlagGems 专用内核生成，含 `@pointwise_dynamic` 封装重写、`_FULL_CONFIG` 注册和算子签名对齐。 |
+|  | vLLM 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-for-vllm.md) | vLLM 专用内核生成，含 SPDX 头、`@triton.autotune`、自定义算子注册和 dispatch 集成。 |
+|  | 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/) | 统一的 GPU 内核算子生成 skill。自动检测目标仓库类型（FlagGems、vLLM 或通用 Python/Triton）并派发到相应的专用子 skill。还包含用于 Bug 报告的反馈提交子 skill。当用户想要生成 GPU 内核算子、创建 Triton 内核，或说 "generate an operator"、"create a kernel for X"、"/kernelgen-flagos" 时使用。此单一 skill 替代了安装 kernelgen-general、kernelgen-for-flaggems、kernelgen-for-vllm 和 kernelgen-submit-feedback 的需求。 |
+|  | 算子诊断 | *规划中* | 诊断 FlagOS 技术栈中的异常算子——识别精度错误、性能回退和跨芯片的后端特定故障。 |
+| **多芯片后端对接** | Dispatch 算子扩展 | *规划中* | 从 `base.py` 查询可 dispatch 的算子，生成 impl 模板文件，向 `register_ops.py` 添加 `OpImpl` 注册，并创建单元测试骨架。 |
+|  | FlagCX 通信后端 | *规划中* | 从头文件解析 20+ 设备和 15+ CCL 函数指针签名，生成所有 stub 实现，外加 CMake 构建配置。 |
+|  | FlagGems 芯片后端 | *规划中* | 按照 FlagGems 后端贡献指南生成完整的 `_vendor/` 脚手架：`__init__.py`（VendorInfoBase 配置）+ `heuristics_config_utils.py` + `tune_configs.yaml` + `ops/` 目录。 |
+|  | 异构训练配置 | *规划中* | 从硬件拓扑描述生成有效的 FlagScale 异构训练配置，自动计算 `hetero_process_meshes` / `hetero_pipeline_layer_split`，并验证约束（TP×DP×PP = 设备数）。 |
+|  | vLLM 厂商后端 | *规划中* | 从模板脚手架新建 vllm-plugin-FL 厂商后端：生成厂商目录、`Backend` 子类、`is_available` 检测、`register_ops` 框架和测试骨架。 |
+| **开发者工具** | 反馈提交 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-submit-feedback.md) | 自动收集环境信息，构建结构化 GitHub Issue，提交到 flagos-ai/skills，GitHub CLI 不可用时回退到邮件方式。 |
+|  | 通用 | [`tle-developer-flagos`](skills/tle-developer-flagos/) | 用于编写高性能 TLE 内核和交付 TLE 功能变更的自包含编排 skill，含可复现验证。当用户想要编写/优化 TLE 内核、实现 TLE API/verifier/lowering 功能或调试 TLE 正确性/性能问题时使用。触发词如 "write a TLE kernel"、"optimize TLE operator"、"debug TLE local_ptr"。 |
+|  | 本地开发环境 | *规划中* | 为 FlagOS 模块（FlagGems / FlagTree / FlagCX 等）搭建本地开发和调试环境——配置依赖、环境变量和调试工具链。 |
+|  | Skill 开发 | [`skill-creator-flagos`](skills/skill-creator-flagos/) | 为 FlagOS skills 仓库创建新 skill、修改现有 skill 和验证 skill 质量。当用户想要从头创建 skill、改进或编辑现有 skill、脚手架新 skill 目录、验证 skill 结构或运行测试用例时使用。触发词如 "create a skill"、"make a new skill for X"、"scaffold a skill"、"improve this skill"、"validate my skill" 或直接 "/skill-creator-flagos"。也适用于用户提到将工作流转化为可复用 skill 或想要打包重复流程为 skill 的场景。 |
 <!-- END_SKILLS_TABLE -->
 
 ### 在智能体中使用 Skills
