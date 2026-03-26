@@ -129,7 +129,10 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
 |  | 实验性算子推广 | *规划中* | 扫描 FlagGems 约130个实验性算子，检查测试覆盖率，对齐签名，完成 `_FULL_CONFIG` 注册，生成迁移 PR 将其推广为主算子。 |
 |  | FlagGems 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-for-flaggems.md) | FlagGems 专用内核生成，含 `@pointwise_dynamic` 封装重写、`_FULL_CONFIG` 注册和算子签名对齐。 |
 |  | vLLM 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-for-vllm.md) | vLLM 专用内核生成，含 SPDX 头、`@triton.autotune`、自定义算子注册和 dispatch 集成。 |
-|  | 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/) | 统一的 GPU 内核算子生成 skill。自动检测目标仓库类型（FlagGems、vLLM 或通用 Python/Triton）并派发到相应的专用子 skill。还包含用于 Bug 报告的反馈提交子 skill。当用户想要生成 GPU 内核算子、创建 Triton 内核，或说 "generate an operator"、"create a kernel for X"、"/kernelgen-flagos" 时使用。此单一 skill 替代了安装 kernelgen-general、kernelgen-for-flaggems、kernelgen-for-vllm 和 kernelgen-submit-feedback 的需求。 |
+|  | 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/) | 统一的 GPU 内核算子生成与优化 skill。自动检测目标仓库类型（FlagGems、vLLM 或通用 Python/Triton）并派发到相应的专用子 skill。包含算子生成、基于 MCP 的迭代优化和反馈提交子 skill。当用户想要生成或优化 GPU 内核算子、创建 Triton 内核，或说 "generate an operator"、"create a kernel for X"、"optimize triton kernel"、"/kernelgen-flagos" 时使用。 |
+|  | 内核优化 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-optimize.md) | 通用 Triton 内核优化，通过 MCP 迭代循环分析现有内核、识别瓶颈并进行多轮优化，直到达到目标加速比。 |
+|  | FlagGems 内核优化 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-optimize-for-flaggems.md) | FlagGems 专用内核优化，支持 3 种模式：原地优化内置算子、优化外部算子并集成到 experimental_ops、或优化已有的实验性算子。包含准确率测试和性能 benchmark。 |
+|  | vLLM 内核优化 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-optimize-for-vllm.md) | vLLM 专用内核优化，含 CustomOp 注册、准确率测试和性能 benchmark 集成。优化 Triton 算子并自动集成到 vLLM 项目。 |
 |  | 算子诊断 | *规划中* | 诊断 FlagOS 技术栈中的异常算子——识别精度错误、性能回退和跨芯片的后端特定故障。 |
 | **多芯片后端对接** | Dispatch 算子扩展 | *规划中* | 从 `base.py` 查询可 dispatch 的算子，生成 impl 模板文件，向 `register_ops.py` 添加 `OpImpl` 注册，并创建单元测试骨架。 |
 |  | FlagCX 通信后端 | *规划中* | 从头文件解析 20+ 设备和 15+ CCL 函数指针签名，生成所有 stub 实现，外加 CMake 构建配置。 |

@@ -8,13 +8,16 @@
 
 编写高性能 GPU 算子复杂且容易出错。不同项目（FlagGems、vLLM、自定义 Triton 仓库）各自有独特的算子实现规范、测试模式和注册系统。此前，用户需要分别安装多个技能。
 
-本统一技能将 **四个子技能** 打包为一个，用户只需安装一次：
+本统一技能将 **七个子技能** 打包为一个，用户只需安装一次：
 
 | 子技能 | 用途 |
 |---|---|
 | **kernelgen-general** | 为任意 Python/Triton 仓库生成 GPU 算子 |
 | **kernelgen-for-flaggems** | FlagGems 专用（`pointwise_dynamic`、`_FULL_CONFIG`、分类测试） |
 | **kernelgen-for-vllm** | vLLM 专用（SPDX 头、`init_logger`、`@triton.autotune`、自定义算子注册） |
+| **kernelgen-optimize** | 通用 Triton 内核优化，通过 MCP 迭代循环进行多轮优化 |
+| **kernelgen-optimize-for-flaggems** | FlagGems 专用优化（3 种模式：内置/外部/实验性算子） |
+| **kernelgen-optimize-for-vllm** | vLLM 专用优化，含 CustomOp 注册和集成 |
 | **kernelgen-submit-feedback** | 通过 GitHub Issues 或邮件提交 bug 报告 |
 
 ### 使用方式
@@ -26,8 +29,8 @@
 # 指定函数类型
 /kernelgen-flagos rms_norm --func-type normalization
 
-# 生成任意算子
-/kernelgen-flagos silu_and_mul
+# 优化已有算子
+/kernelgen-flagos optimize <算子源目录> [目标加速比] [最大迭代次数]
 ```
 
 技能会自动：
@@ -59,6 +62,11 @@
 │           （环境检查 → MCP 生成 →                          │
 │            代码适配 → 测试 → 性能基准测试）                  │
 │                                                          │
+│  阶段 2b  优化（按需）                                     │
+│           ├── FlagGems? → kernelgen-optimize-for-flaggems.md │
+│           ├── vLLM?     → kernelgen-optimize-for-vllm.md    │
+│           └── 其他?     → kernelgen-optimize.md              │
+│                                                          │
 │  阶段 3   反馈处理（按需）                                  │
 │           → kernelgen-submit-feedback.md                  │
 └──────────────────────────────────────────────────────────┘
@@ -70,14 +78,17 @@
 
 ```
 skills/kernelgen-flagos/
-├── SKILL.md                       # 统一入口（路由逻辑）
-├── kernelgen-general.md           # 通用子技能
-├── kernelgen-for-flaggems.md      # FlagGems 专用子技能
-├── kernelgen-for-vllm.md          # vLLM 专用子技能
-├── kernelgen-submit-feedback.md   # 反馈提交子技能
-├── LICENSE.txt                    # Apache 2.0 许可证
-├── README.md                      # 英文文档
-└── README_zh.md                   # 本文档（中文版）
+├── SKILL.md                              # 统一入口（路由逻辑）
+├── kernelgen-general.md                  # 通用生成子技能
+├── kernelgen-for-flaggems.md             # FlagGems 专用生成子技能
+├── kernelgen-for-vllm.md                 # vLLM 专用生成子技能
+├── kernelgen-optimize.md                 # 通用优化子技能
+├── kernelgen-optimize-for-flaggems.md    # FlagGems 专用优化子技能
+├── kernelgen-optimize-for-vllm.md        # vLLM 专用优化子技能
+├── kernelgen-submit-feedback.md          # 反馈提交子技能
+├── LICENSE.txt                           # Apache 2.0 许可证
+├── README.md                             # 英文文档
+└── README_zh.md                          # 本文档（中文版）
 ```
 
 ---
