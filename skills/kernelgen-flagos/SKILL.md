@@ -36,9 +36,9 @@ This is a **unified entry point** that bundles generation and optimization sub-s
 | Sub-skill file | Purpose |
 |---|---|
 | **Generation** | |
-| `kernelgen-general.md` | Generate GPU kernels for **any** Python/Triton repository |
-| `kernelgen-for-flaggems.md` | Specialized generation for **FlagGems** repositories |
-| `kernelgen-for-vllm.md` | Specialized generation for **vLLM** repositories |
+| `kernelgen-generate.md` | Generate GPU kernels for **any** Python/Triton repository |
+| `kernelgen-generate-for-flaggems.md` | Specialized generation for **FlagGems** repositories |
+| `kernelgen-generate-for-vllm.md` | Specialized generation for **vLLM** repositories |
 | **Optimization** | |
 | `kernelgen-optimize.md` | Optimize existing Triton kernels via MCP iterative optimization (general purpose) |
 | `kernelgen-optimize-for-flaggems.md` | Optimize Triton operators and integrate into **FlagGems** (3 modes: built-in/external/experimental) |
@@ -89,7 +89,7 @@ from this skill's directory, then **follow the instructions in that file exactly
 Glob tool to find the path:
 
 ```
-Glob: **/skills/kernelgen-flagos/kernelgen-general.md
+Glob: **/skills/kernelgen-flagos/kernelgen-generate.md
 ```
 
 Then use the Read tool to read the matched path.
@@ -100,9 +100,9 @@ Then use the Read tool to read the matched path.
 
 | Detection Result | Action |
 |---|---|
-| FlagGems repository detected | Read `kernelgen-for-flaggems.md` and follow it |
-| vLLM repository detected | Read `kernelgen-for-vllm.md` and follow it |
-| Neither detected (or unknown) | Read `kernelgen-general.md` and follow it |
+| FlagGems repository detected | Read `kernelgen-generate-for-flaggems.md` and follow it |
+| vLLM repository detected | Read `kernelgen-generate-for-vllm.md` and follow it |
+| Neither detected (or unknown) | Read `kernelgen-generate.md` and follow it |
 
 **Optimization requests** (user wants to optimize an existing operator, mentions "optimize", "speedup", "improve performance"):
 

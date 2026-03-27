@@ -12,9 +12,9 @@
 
 | 子技能 | 用途 |
 |---|---|
-| **kernelgen-general** | 为任意 Python/Triton 仓库生成 GPU 算子 |
-| **kernelgen-for-flaggems** | FlagGems 专用（`pointwise_dynamic`、`_FULL_CONFIG`、分类测试） |
-| **kernelgen-for-vllm** | vLLM 专用（SPDX 头、`init_logger`、`@triton.autotune`、自定义算子注册） |
+| **kernelgen-generate** | 为任意 Python/Triton 仓库生成 GPU 算子 |
+| **kernelgen-generate-for-flaggems** | FlagGems 专用（`pointwise_dynamic`、`_FULL_CONFIG`、分类测试） |
+| **kernelgen-generate-for-vllm** | vLLM 专用（SPDX 头、`init_logger`、`@triton.autotune`、自定义算子注册） |
 | **kernelgen-optimize** | 通用 Triton 内核优化，通过 MCP 迭代循环进行多轮优化 |
 | **kernelgen-optimize-for-flaggems** | FlagGems 专用优化（3 种模式：内置/外部/实验性算子） |
 | **kernelgen-optimize-for-vllm** | vLLM 专用优化，含 CustomOp 注册和集成 |
@@ -56,9 +56,9 @@
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  阶段 1   检测仓库类型                                     │
-│           ├── FlagGems? → kernelgen-for-flaggems.md      │
-│           ├── vLLM?     → kernelgen-for-vllm.md         │
-│           └── 其他?     → kernelgen-general.md           │
+│           ├── FlagGems? → kernelgen-generate-for-flaggems.md │
+│           ├── vLLM?     → kernelgen-generate-for-vllm.md    │
+│           └── 其他?     → kernelgen-generate.md              │
 │                                                          │
 │  阶段 2   执行选定的子技能工作流                            │
 │           （环境检查 → MCP 生成 →                          │
@@ -85,9 +85,9 @@
 ```
 skills/kernelgen-flagos/
 ├── SKILL.md                              # 统一入口（路由逻辑）
-├── kernelgen-general.md                  # 通用生成子技能
-├── kernelgen-for-flaggems.md             # FlagGems 专用生成子技能
-├── kernelgen-for-vllm.md                 # vLLM 专用生成子技能
+├── kernelgen-generate.md                 # 通用生成子技能
+├── kernelgen-generate-for-flaggems.md    # FlagGems 专用生成子技能
+├── kernelgen-generate-for-vllm.md        # vLLM 专用生成子技能
 ├── kernelgen-optimize.md                 # 通用优化子技能
 ├── kernelgen-optimize-for-flaggems.md    # FlagGems 专用优化子技能
 ├── kernelgen-optimize-for-vllm.md        # vLLM 专用优化子技能

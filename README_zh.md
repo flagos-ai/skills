@@ -127,8 +127,8 @@ gemini extensions install https://github.com/flagos-ai/skills.git --consent
 |  | 部署后自动评测 | *规划中* | 模型部署后自动触发评测，跟踪评测状态，失败时报错，完成后推送结果通知。 |
 | **算子与内核开发** | 复杂算子开发 | *规划中* | 为多步骤融合算子（fused attention、fused MoE 等）生成骨架代码，处理共享内存 tiling 策略和多后端分支。 |
 |  | 实验性算子推广 | *规划中* | 扫描 FlagGems 约130个实验性算子，检查测试覆盖率，对齐签名，完成 `_FULL_CONFIG` 注册，生成迁移 PR 将其推广为主算子。 |
-|  | FlagGems 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-for-flaggems.md) | FlagGems 专用内核生成，含 `@pointwise_dynamic` 封装重写、`_FULL_CONFIG` 注册和算子签名对齐。 |
-|  | vLLM 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-for-vllm.md) | vLLM 专用内核生成，含 SPDX 头、`@triton.autotune`、自定义算子注册和 dispatch 集成。 |
+|  | FlagGems 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-generate-for-flaggems.md) | FlagGems 专用内核生成，含 `@pointwise_dynamic` 封装重写、`_FULL_CONFIG` 注册和算子签名对齐。 |
+|  | vLLM 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-generate-for-vllm.md) | vLLM 专用内核生成，含 SPDX 头、`@triton.autotune`、自定义算子注册和 dispatch 集成。 |
 |  | 内核生成 | [`kernelgen-flagos`](skills/kernelgen-flagos/) | 统一的 GPU 内核算子生成与优化 skill。自动检测目标仓库类型（FlagGems、vLLM 或通用 Python/Triton）并派发到相应的专用子 skill。包含算子生成、基于 MCP 的迭代优化和反馈提交子 skill。当用户想要生成或优化 GPU 内核算子、创建 Triton 内核，或说 "generate an operator"、"create a kernel for X"、"optimize triton kernel"、"/kernelgen-flagos" 时使用。 |
 |  | 内核优化 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-optimize.md) | 通用 Triton 内核优化，通过 MCP 迭代循环分析现有内核、识别瓶颈并进行多轮优化，直到达到目标加速比。 |
 |  | FlagGems 内核优化 | [`kernelgen-flagos`](skills/kernelgen-flagos/kernelgen-optimize-for-flaggems.md) | FlagGems 专用内核优化，支持 3 种模式：原地优化内置算子、优化外部算子并集成到 experimental_ops、或优化已有的实验性算子。包含准确率测试和性能 benchmark。 |
