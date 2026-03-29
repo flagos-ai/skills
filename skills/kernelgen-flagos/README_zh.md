@@ -103,6 +103,10 @@ skills/kernelgen-flagos/
 
 ## 安装方式
 
+### 前置依赖
+
+本技能依赖 `kernelgen-mcp` MCP 服务进行算子生成与优化，请确保在使用前已正确安装并配置该 MCP 服务。
+
 ### 快速安装（通过 npx）
 
 ```bash

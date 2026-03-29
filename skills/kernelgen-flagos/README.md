@@ -149,6 +149,10 @@ Combines MCP platform specialization with FlagGems framework integration. Suppor
 
 ## Usage in FlagOS Skills Repository
 
+### Prerequisites
+
+This skill depends on the `kernelgen-mcp` MCP service for operator generation and optimization. Make sure it is properly installed and configured before use.
+
 ### Quick Install (via npx)
 
 ```bash
