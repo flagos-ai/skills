@@ -109,6 +109,11 @@ the file was adopted from.
 
 When upgrading, these customizations must be preserved and adapted to the new API.
 
+**Do NOT replace `current_platform.torch_device_fn.*` with `torch.cuda.*`.** The plugin supports
+multiple backends (NVIDIA CUDA, Ascend NPU, MetaX MACA, etc.). `torch_device_fn` is the platform
+abstraction that routes to the correct device API at runtime. Hardcoding `torch.cuda.*` breaks
+non-CUDA platforms.
+
 **Delete all model code.** After upgrading to v0.18+, all models are natively supported upstream.
 The plugin no longer needs to carry any model-specific code. Delete entirely:
 - All model files in `vllm_fl/models/`

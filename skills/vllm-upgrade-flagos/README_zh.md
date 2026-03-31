@@ -117,8 +117,10 @@ conda activate vllm_plugin_update && bash scripts/benchmark.sh Qwen3.5-397B-A17B
 | 基类方法缺失调用 | `import_kernels()` 未调用 `super()` | 添加 `super()` 调用 |
 | OOT 注册门控 | FlagGems 门控阻止注册 | 移除不必要的门控 |
 | 返回值语义变更 | runner 自行处理 shared experts | 调整返回值（不返回 tuple） |
-| `_custom_ops` 函数移除 | `from vllm._custom_ops import silu_and_mul` → 移除 | 改用 `torch.ops._C.silu_and_mul` |
+| `_custom_ops` 函数移除 | `from vllm._custom_ops import silu_and_mul` → 移除 | 改用 `torch.ops._C.<fn>`，逐个检查上游 `_custom_ops.py` |
 | 工具函数移除 | `from vllm.utils.import_utils import init_cached_hf_modules` → 移除 | 删除相关调用 |
+
+> 注：平台特定的修复（如 CUDA kernel 路径）应在代码中用行内注释标注，不在此文档中列出。本技能保持平台无关。
 
 ---
 

@@ -14,6 +14,7 @@ natively supported upstream should be removed from the plugin.
 * Preserve ALL plugin customizations (dispatch, custom ops, platform, IO dumper, FL envs)
 * **Idempotent** — safe to re-run; existing files get overwritten with fresh adaptations
 * Reuse the copy-then-patch pattern from model-migrate-flagos
+* Do NOT replace `current_platform.torch_device_fn.*` calls with `torch.cuda.*`. The plugin supports multiple backends (NVIDIA CUDA, Ascend NPU, MetaX MACA, etc.). `torch_device_fn` is the platform abstraction that routes to the correct device API at runtime. Hardcoding `torch.cuda.*` breaks non-CUDA platforms.
 
 ## Conda Environments
 
@@ -235,9 +236,9 @@ For each:
 - Preserve dispatch integration (`resolve_op` pattern)
 
 Known API migration patterns for ops:
-- `from vllm._custom_ops import silu_and_mul` → removed in v0.18.1. Use `torch.ops._C.silu_and_mul` instead.
-  Other ops (`rms_norm`, `fused_add_rms_norm`, `rotary_embedding`, `moe_sum`, `moe_align_block_size`, `topk_softmax`) still exist in `vllm._custom_ops` as of v0.18.1, but may be removed in future versions. Prefer `torch.ops._C.*` for forward compatibility.
+- `from vllm._custom_ops import <fn>` — some functions removed in v0.18.1 (e.g. `silu_and_mul`). Use `torch.ops._C.<fn>` instead. Check each import against upstream `vllm/_custom_ops.py`.
 - `from vllm.utils.import_utils import init_cached_hf_modules` → removed in v0.18.1. Delete the call entirely.
+- Platform-specific fixes (e.g. CUDA kernel paths) should be marked with inline comments in code, not documented here. Keep this skill platform-agnostic.
 
 ```bash
 conda activate vllm_plugin_update && python3 -c "from vllm_fl.ops import custom_ops; print('ops OK')"
