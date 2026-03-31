@@ -14,9 +14,8 @@ placing code.
 - **Glob**: find files by pattern
 - **MCP tools**: `mcp__kernelgen-mcp__generate_kernel` and `mcp__kernelgen-mcp__optimize_kernel`
 
-> **⚠️ MCP Prerequisite Check**: If the user has not configured the kernelgen MCP service (i.e., the MCP tools are unavailable or calls fail),
-> immediately prompt the user to visit https://kernelgen.flagos.io/ to register and obtain the kernelgen MCP service URL and JWT Token,
-> then follow the instructions in Step 0b to complete the configuration and retry. Do not proceed with subsequent steps if MCP is not ready.
+> **⚠️ MCP Prerequisite**: MCP configuration is handled by `SKILL.md` Phase 0. If MCP tools fail during execution,
+> stop and tell the user to visit https://kernelgen.flagos.io/mcp 获取 Token 后重新配置。
 
 ## Execution Rules
 
@@ -107,45 +106,10 @@ torch and triton imports succeed.
 
 ### 0b. Check MCP Availability
 
-Use the Read tool to check for MCP configuration. **Only check project-local paths** — do NOT
-attempt to read user home directory (`~/`) as Claude Code typically cannot access it:
-
-1. `.claude/settings.json` — look for `mcpServers` containing the key `"kernelgen-mcp"`
-2. `.mcp.json` — same check
-
-If found, check whether the exact key `"kernelgen-mcp"` exists under `mcpServers`.
-Do NOT use substring matching (e.g., matching `"kernelgen"` inside another key name).
-
-**If the MCP server is NOT found in either file**, ask the user:
-
-```
-kernelgen-mcp service was not detected in the project configuration.
-
-Possible scenarios:
-  A) Not yet configured — Please visit https://kernelgen.flagos.io/ to register and obtain a JWT Token,
-     then provide me with the URL and Token, and I will write them to .claude/settings.json.
-  B) Already configured globally — If you have already configured kernelgen-mcp in your global settings,
-     please let me know and I will skip this step and continue.
-
-The final configuration format is as follows (.claude/settings.json):
-{
-  "mcpServers": {
-    "kernelgen-mcp": {
-      "type": "sse",
-      "url": "<YOUR_URL>",
-      "headers": {
-        "Authorization": "Bearer <YOUR_JWT_TOKEN>"
-      }
-    }
-  }
-}
-```
-
-Wait for the user to respond. Then:
-- If the user provides URL + JWT: use the Edit tool (or Write tool if the file doesn't exist)
-  to write the configuration, **merging** with any existing content (never overwrite other MCP
-  server entries or top-level keys). Tell the user to restart Claude Code.
-- If the user says MCP is configured globally: proceed to Step 1.
+> **MCP configuration is handled centrally by `SKILL.md` Phase 0 (via `kernelgen-mcp-setup.md`).**
+> By the time execution reaches this sub-skill, MCP should already be configured and ready.
+> If MCP tools are unavailable or calls fail at any point, stop and tell the user:
+> "MCP 服务不可用，请检查配置或访问 https://kernelgen.flagos.io/mcp 获取 Token 后重新配置。"
 
 **If the MCP server IS configured**, proceed to Step 1.
 

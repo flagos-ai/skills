@@ -46,6 +46,8 @@ This is a **unified entry point** that bundles generation and optimization sub-s
 | **Platform Specialization** | |
 | `kernelgen-specialize.md` | Specialize Triton operators to target platforms (e.g., GPU → Ascend NPU) via MCP `specialize_kernel` |
 | `kernelgen-specialize-for-flaggems.md` | Platform specialization + **FlagGems** integration (4 modes: vendor-ops/vendor-fused/override-builtin/experimental) |
+| **MCP Configuration** | |
+| `kernelgen-mcp-setup.md` | Check and auto-configure the `kernelgen-server` MCP service (URL built-in, user only provides Token) |
 | **Feedback** | |
 | `kernelgen-submit-feedback.md` | Submit bug reports and feedback via GitHub or email |
 
@@ -54,6 +56,23 @@ All sub-skill files are located in the **same directory** as this `SKILL.md` fil
 ---
 
 ## Routing Protocol — Follow This BEFORE Doing Anything Else
+
+### Phase 0: MCP Configuration Check
+
+Before anything else, ensure the `kernelgen-server` MCP service is configured and ready.
+
+Use the Glob tool to find `kernelgen-mcp-setup.md` in this skill's directory:
+
+```
+Glob: **/skills/kernelgen-flagos/kernelgen-mcp-setup.md
+```
+
+Then use the Read tool to read the matched file and **follow its instructions exactly**.
+
+- If MCP is already configured → proceed to Phase 1.
+- If MCP is not configured → the setup skill will guide the user through configuration.
+  Once configuration is written and the user is prompted to restart, **stop here** — do not
+  continue to Phase 1.
 
 ### Phase 1: Detect Repository Type
 
