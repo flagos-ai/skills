@@ -1,16 +1,26 @@
-> **FlagOS** is a fully open-source AI system software stack for heterogeneous AI chips, allowing AI models to be developed once and seamlessly ported to a wide range of AI hardware with minimal effort. This repository collects reusable **Skills** for FlagOS — injecting domain knowledge, workflow standards, and best practices into AI coding agents.
+# Overview
+
+**FlagOS** is a fully open-source AI system software stack for heterogeneous AI chips,
+allowing AI models to be developed once and seamlessly ported to a wide range of AI hardware with minimal effort.
+This repository collects reusable **Skills** for FlagOS — injecting domain knowledge, workflow standards,
+and best practices into AI coding agents.
 >
 > [中文版](README_zh.md)
 
 ## What are Skills?
 
-Skills are **folder-based capability packages**: each skill uses documentation, scripts, and resources to teach agents to reliably and reproducibly complete tasks in a specific domain. Each skill folder contains a `SKILL.md` file with YAML frontmatter (name + description) followed by detailed agent instructions. Skills can also include reference docs, scripts, and assets.
+Skills are **folder-based capability packages**: each skill uses documentation, scripts,
+and resources to teach agents to reliably and reproducibly complete tasks in a specific domain.
+Each skill folder contains a `SKILL.md` file with YAML frontmatter (name + description)
+followed by detailed agent instructions.
+Skills can also include reference docs, scripts, and assets.
 
 This repository follows the [Agent Skills open standard](https://agentskills.io/specification).
 
 ## Quick Start
 
-FlagOS Skills are compatible with **Claude Code**, **Cursor**, **Codex**, and any agent supporting the [Agent Skills standard](https://agentskills.io/specification).
+FlagOS Skills are compatible with **Claude Code**, **Cursor**, **Codex**, and any agent
+supporting the [Agent Skills standard](https://agentskills.io/specification).
 
 ### npx (Recommended — works with all agents)
 
@@ -48,33 +58,35 @@ npx skills remove            # Interactive remove
 
 1. Register the repository as a plugin marketplace (in Claude Code interactive mode):
 
-```
-/plugin marketplace add flagos-ai/skills
-```
-
-Or from the terminal:
-
-```bash
-claude plugin marketplace add flagos-ai/skills
-```
+   ```
+   /plugin marketplace add flagos-ai/skills
+   ```
+   
+   Or from the terminal:
+   
+   ```bash
+   claude plugin marketplace add flagos-ai/skills
+   ```
 
 2. Install skills:
 
-```
-/plugin install flagos-skills@flagos-skills
-```
+   ```
+   /plugin install flagos-skills@flagos-skills
+   ```
+   
+   Or from the terminal:
+   
+   ```bash
+   claude plugin install flagos-skills@flagos-skills
+   ```
 
-Or from the terminal:
-
-```bash
-claude plugin install flagos-skills@flagos-skills
-```
-
-After installation, mention the skill in your prompt — Claude automatically loads the corresponding `SKILL.md` instructions.
+After installation, mention the skill in your prompt — Claude automatically
+loads the corresponding `SKILL.md` instructions.
 
 ### Cursor
 
-This repository includes Cursor plugin manifests (`.cursor-plugin/plugin.json` and `.cursor-plugin/marketplace.json`).
+This repository includes Cursor plugin manifests (`.cursor-plugin/plugin.json`
+and `.cursor-plugin/marketplace.json`).
 
 Install from the repository URL or local checkout via the Cursor plugin flow.
 
@@ -106,11 +118,15 @@ See the [Codex Skills guide](https://developers.openai.com/codex/skills/) for mo
 gemini extensions install https://github.com/flagos-ai/skills.git --consent
 ```
 
-This repo includes `gemini-extension.json` and `agents/AGENTS.md` for Gemini CLI integration. See [Gemini CLI extensions docs](https://geminicli.com/docs/extensions/) for more help.
+This repo includes `gemini-extension.json` and `agents/AGENTS.md` for Gemini CLI integration.
+See [Gemini CLI extensions docs](https://geminicli.com/docs/extensions/) for more help.
 
 ### Manual / Other Agents
 
-For any agent that supports the [Agent Skills standard](https://agentskills.io/specification), point it at the `skills/` directory in this repository. Each skill is self-contained with a `SKILL.md` entry point. The `agents/AGENTS.md` file can also be used as a fallback for agents that don't support skills natively.
+For any agent that supports the [Agent Skills standard](https://agentskills.io/specification),
+point it at the `skills/` directory in this repository.
+Each skill is self-contained with a `SKILL.md` entry point.
+The `agents/AGENTS.md` file can also be used as a fallback for agents that don't support skills natively.
 
 ## Skills Catalog
 
@@ -159,7 +175,7 @@ Your agent automatically loads the corresponding `SKILL.md` instructions and hel
 
 ## Repository Structure
 
-```
+```none
 ├── .claude-plugin/          # Claude Code plugin manifest
 │   └── marketplace.json
 ├── .cursor-plugin/          # Cursor plugin manifest
@@ -185,6 +201,7 @@ Your agent automatically loads the corresponding `SKILL.md` instructions and hel
 ## Creating a New Skill
 
 1. **Create directory & copy template**
+
    ```bash
    mkdir skills/<skill-name>
    cp template/SKILL.md skills/<skill-name>/SKILL.md
@@ -197,6 +214,7 @@ Your agent automatically loads the corresponding `SKILL.md` instructions and hel
 4. **Add supporting files** (optional) — `references/`, `scripts/`, `assets/`, `LICENSE.txt`
 
 5. **Validate**
+
    ```bash
    python scripts/validate_skills.py
    ```
@@ -205,4 +223,4 @@ See [contributing.md](contributing.md) for the full contribution guide.
 
 ## License
 
-[Apache License 2.0](LICENSE)
+This project is licenced under the [Apache License version 2.0](LICENSE) license.
