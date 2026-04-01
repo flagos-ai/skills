@@ -3,9 +3,8 @@
 
 You are an expert at generating GPU kernel operators for the vLLM project using the `kernelgen-mcp` MCP service.
 
-> **⚠️ MCP Prerequisite Check**: If the user has not configured the kernelgen MCP service (i.e., MCP tools are unavailable or calls fail),
-> immediately prompt the user to visit https://kernelgen.flagos.io/ to register and obtain the kernelgen MCP service URL and JWT Token,
-> then complete the configuration following Step 0b instructions before retrying. Do not proceed with subsequent steps if MCP is not ready.
+> **⚠️ MCP Prerequisite**: MCP configuration is handled by `SKILL.md` Phase 0. If MCP tools fail during execution,
+> stop and tell the user to visit https://kernelgen.flagos.io/mcp 获取 Token 后重新配置。
 
 ## Execution Rules
 
@@ -112,56 +111,10 @@ all imports succeed.
 
 ### 0b. Check MCP Availability
 
-Use the Read tool to read the file `.claude/settings.json` at the project root.
-If the file does not exist, the MCP is NOT configured.
-
-If the file exists, parse the JSON and check whether the exact key `"kernelgen-mcp"` exists
-under `mcpServers`:
-
-```
-mcpServers["kernelgen-mcp"]
-```
-
-- If the key `"kernelgen-mcp"` does **not** exist → the MCP is NOT configured.
-- If the key `"kernelgen-mcp"` **does** exist → the MCP IS configured — proceed to Step 1.
-
-Do NOT use substring matching (e.g., matching `"kernelgen"` inside `"my_kernelgen_server"`).
-Only the exact key `"kernelgen-mcp"` counts.
-
-**If the MCP server is NOT configured**, stop and tell the user:
-
-```
-kernelgen-mcp service is not configured. Please follow these steps:
-
-1. Visit https://kernelgen.flagos.io/ to register and obtain your JWT Token.
-2. Provide your MCP service URL and JWT Token to me, and I will help you write the configuration.
-
-   The final configuration format is as follows:
-   {
-     "mcpServers": {
-       "kernelgen-mcp": {
-         "type": "sse",
-         "url": "<YOUR_URL>",
-         "headers": {
-           "Authorization": "Bearer <YOUR_JWT_TOKEN>"
-         }
-       }
-     }
-   }
-```
-
-Wait for the user to provide the URL and JWT Token. Then:
-
-1. Use the Read tool to check if `.claude/settings.json` already exists.
-2. If it exists, read its content and parse the JSON. Then:
-   - If `mcpServers` key already exists, add `"kernelgen-mcp": {...}` into it **without
-     removing any other existing MCP server entries**.
-   - If `mcpServers` key does not exist, create it with the single `kernelgen-mcp` entry.
-   - **Never overwrite the entire file** — preserve all other top-level keys.
-3. If the file does not exist, create it with just the `mcpServers` object.
-4. Use the Write tool (for new file) or Edit tool (for existing file) to save.
-5. Tell the user to **restart Claude Code** so the new MCP server is picked up, then re-run
-   the `/kernelgen_for_vllm` command.
+> **MCP configuration is handled centrally by `SKILL.md` Phase 0 (via `kernelgen-mcp-setup.md`).**
+> By the time execution reaches this sub-skill, MCP should already be configured and ready.
+> If MCP tools are unavailable or calls fail at any point, stop and tell the user:
+> "MCP 服务不可用，请检查配置或访问 https://kernelgen.flagos.io/mcp 获取 Token 后重新配置。"
 
 **If the MCP server IS configured**, proceed to Step 1.
 
