@@ -36,7 +36,7 @@ Perform all of the following steps except for obtaining the Access Token in your
 
 4. Send a prompt to setup the `kernelgen-flagos` unified skill, including all sub-skills, for example:
 
-   * **Copilot**: "Setup kernelgen-flagos skill **in Copilot** from <https://github.com/flagos-ai/skills/tree/main/skills/kernelgen-flagos>."
+   * **Copilot**: "Setup kernelgen-flagos skills **in Copilot** from <https://github.com/flagos-ai/skills/tree/main/skills/kernelgen-flagos>."
 
    * **Other agent clients**: "Setup kernelgen-flagos skills from <https://github.com/flagos-ai/skills/tree/main/skills/kernelgen-flagos>."
 
