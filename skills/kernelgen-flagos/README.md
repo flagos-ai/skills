@@ -4,13 +4,13 @@
 
 ## Overview
 
-The KernelGen `kernelgen-flagos` skill is a unified AI programming skill launched by the Beijing Academy of Artificial Intelligence (BAAI). By leveraging the `kernelgen-mcp` KernelGen Operator Development MCP Toolkit service, it is compatible with various domestic and international chip platforms to generate high-precision GPU kernel operators. It automatically detects the type of the target code repository and dispatches it to the corresponding dedicated workflow.
+The KernelGen `kernelgen-flagos` skill is a unified AI programming skill launched by FlagOS. By leveraging the `kernelgen-mcp` KernelGen Operator Development MCP Toolkit service, it is compatible with various domestic and international chip platforms to generate high-precision GPU kernel operators. It automatically detects the type of the target code repository and dispatches it to the corresponding dedicated workflow.
 
 ## Quick Start
 
 This section introduces how to quickly start a task, for example, creating, optimizing, specialize operators for a specific platform, or submitting feedback. You can use either prompt or the command line to execute these tasks. In this section, we only teach you how to use prompts. For how to use command lines or manual configurations, see [KernelGen Skills User Guide](https://docs.flagos.io/projects/kernelgen/en/latest/skills_user_guide/skills-user-guide.html#).
 
-Perform all of the following steps except for obtaining the Access Token in your agent client, for example, OpenClaw, VS Code with activated Github Copilot, or Claude Code.
+Perform all of the following steps except for obtaining the KernelGen Token in your agent client, for example, OpenClaw, VSCode with activated Github Copilot, or Claude Code.
 
 ### Prerequisites
 
@@ -22,13 +22,13 @@ Perform all of the following steps except for obtaining the Access Token in your
 
 ### Steps
 
-1. Obtain the **Access Token** from: [https://kernelgen.flagos.io/mcp](https://kernelgen.flagos.io/mcp).
+1. Obtain the **KernelGen Token** from: [https://kernelgen.flagos.io/mcp](https://kernelgen.flagos.io/mcp).
 
 2. In your agent client, send a prompt to connect to the KernelGen Operator Development MCP Toolkit, for example:
 
-   * "Connect to MCP, its URL is `http://kernelgen.flagos.io/sse` and token is `<your Access Token>`."
+   * "Connect to MCP, its URL is `http://kernelgen.flagos.io/sse` and token is `<your KernelGen Token>`."
 
-   * "Please configure the kernelgen MCP with the URL `http://kernelgen.flagos.io/sse` and the token is `<your Access Token>`. "
+   * "Please configure the kernelgen MCP with the URL `http://kernelgen.flagos.io/sse` and the token is `<your KernelGen Token>`. "
 
    **Note**: You may need to restart your agent to let the settings take effect. Check this in the documentation of the relevant AI agent.
 

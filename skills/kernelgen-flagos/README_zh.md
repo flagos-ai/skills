@@ -4,13 +4,13 @@
 
 ## 产品概述
 
-KernelGen `kernelgen-flagos` 技能（Skills）是北京智源人工智能研究院（BAAI）推出的统一 AI 编程技能。通过调用 `kernelgen-mcp` KernelGen 算子开发 MCP 工具集服务，该技能兼容国内外多种芯片平台，可生成高精度 GPU 算子。它能够自动检测目标代码仓库的类型，并分发至对应的专属工作流执行。
+KernelGen `kernelgen-flagos` 技能（Skills）是 FlagOS 推出的统一 AI 编程技能。通过调用 `kernelgen-mcp` KernelGen 算子开发 MCP 工具集服务，该技能兼容国内外多种芯片平台，可生成高精度 GPU 算子。它能够自动检测目标代码仓库的类型，并分发至对应的专属工作流执行。
 
 ## 快速入门
 
 本节介绍如何快速启动一个任务，例如为特定平台创建、优化、专化算子，或提交反馈。您可以使用提示词或命令行来执行这些任务。本节仅介绍如何使用提示词。如需了解命令行或手动配置的使用方式，请参见 [KernelGen Skills 用户指南](https://docs.flagos.io/projects/kernelgen/zh-cn/latest/skills_user_guide/skills-user-guide.html)。
 
-除获取 Access Token 外，请在您的 AI 智能体客户端中执行以下所有步骤，例如 OpenClaw、已激活 GitHub Copilot 的 VS Code，或 Claude Code。
+除获取 KernelGen Token 外，请在您的 AI 智能体客户端中执行以下所有步骤，例如 OpenClaw、已激活 GitHub Copilot 的 VSCode，或 Claude Code。
 
 ### 前提条件
 
@@ -22,13 +22,13 @@ KernelGen `kernelgen-flagos` 技能（Skills）是北京智源人工智能研究
 
 ### 操作步骤
 
-1. 从以下地址获取 **Access Token**：[https://kernelgen.flagos.io/mcp](https://kernelgen.flagos.io/mcp)。
+1. 从以下地址获取 **KernelGen Token**：[https://kernelgen.flagos.io/mcp](https://kernelgen.flagos.io/mcp)。
 
 2. 在您的 AI 智能体客户端中，发送提示词以连接 KernelGen 算子开发 MCP 工具集，例如：
 
-   * "连接 MCP，其 URL 为 `http://kernelgen.flagos.io/sse`，token 为 `<your Access Token>`。"
+   * "连接 MCP，其 URL 为 `http://kernelgen.flagos.io/sse`，token 为 `<your KernelGen Token>`。"
 
-   * "请配置 kernelgen MCP，URL 为 `http://kernelgen.flagos.io/sse`，token 为 `<your Access Token>`。"
+   * "请配置 kernelgen MCP，URL 为 `http://kernelgen.flagos.io/sse`，token 为 `<your KernelGen Token>`。"
 
    **注意**：您可能需要重启 AI 智能体以使设置生效。请参阅相关 AI 智能体的文档进行确认。
 
