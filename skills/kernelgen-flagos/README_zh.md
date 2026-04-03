@@ -26,9 +26,9 @@ KernelGen `kernelgen-flagos` 技能（Skills）是 FlagOS 推出的统一 AI 编
 
 2. 在您的 AI 智能体客户端中，发送提示词以连接 KernelGen 算子开发 MCP 工具集，例如：
 
-   * "连接 MCP，其 URL 为 `http://kernelgen.flagos.io/sse`，token 为 `<your KernelGen Token>`。"
+   * "连接 MCP，其 URL 为 `https://kernelgen.flagos.io/sse`，token 为 `<your KernelGen Token>`。"
 
-   * "请配置 kernelgen MCP，URL 为 `http://kernelgen.flagos.io/sse`，token 为 `<your KernelGen Token>`。"
+   * "请配置 kernelgen MCP，URL 为 `https://kernelgen.flagos.io/sse`，token 为 `<your KernelGen Token>`。"
 
    **注意**：您可能需要重启 AI 智能体以使设置生效。请参阅相关 AI 智能体的文档进行确认。
 

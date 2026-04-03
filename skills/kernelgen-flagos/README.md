@@ -26,9 +26,9 @@ Perform all of the following steps except for obtaining the KernelGen Token in y
 
 2. In your agent client, send a prompt to connect to the KernelGen Operator Development MCP Toolkit, for example:
 
-   * "Connect to MCP, its URL is `http://kernelgen.flagos.io/sse` and token is `<your KernelGen Token>`."
+   * "Connect to MCP, its URL is `https://kernelgen.flagos.io/sse` and token is `<your KernelGen Token>`."
 
-   * "Please configure the kernelgen MCP with the URL `http://kernelgen.flagos.io/sse` and the token is `<your KernelGen Token>`. "
+   * "Please configure the kernelgen MCP with the URL `https://kernelgen.flagos.io/sse` and the token is `<your KernelGen Token>`. "
 
    **Note**: You may need to restart your agent to let the settings take effect. Check this in the documentation of the relevant AI agent.
 
