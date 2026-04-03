@@ -118,6 +118,10 @@ This unified skill packages nine sub-skills into one, requiring installation onl
 
 The unified entry point. Contains routing logic that auto-detects the repository type (FlagGems, vLLM, or generic) and reads the appropriate sub-skill file to execute.
 
+### `kernelgen-mcp-setup.md`
+
+MCP service configuration check and auto-setup. Before any sub-skill executes, SKILL.md dispatches here to verify that the kernelgen-mcp MCP service is configured. If not, guides the user through token acquisition and writes the configuration automatically.
+
 ### `kernelgen-generate.md`
 
 Full 10-step workflow for generating GPU kernel operators in any Python/Triton repository. Includes dynamic repo structure discovery, convention detection, and adaptive code placement.
