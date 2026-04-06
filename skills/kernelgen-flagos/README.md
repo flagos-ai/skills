@@ -84,7 +84,7 @@ KernelGen automatically detects whether the project is a FlagGems repository, a 
 
    or
 
-   ```{code-block} python
+   ```{code-block} shell
    /kernelgen-flagos Generate the ReLU operator. Use MetaX. Integrated into vLLM.
    ```
 
@@ -96,7 +96,7 @@ KernelGen automatically detects whether the project is a FlagGems repository, a 
 
    or
 
-   ```{code-block} python
+   ```{code-block} shell
    /kernelgen-flagos Optimize the scaled_dot_product_attention_math operator. Optimize 5 iterations. The scaled_dot_product_attention_math operator is located at <operator path>.
    ```
 
