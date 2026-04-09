@@ -40,7 +40,7 @@ def get_gpu_backend():
     # Try Iluvatar CoreX (torch_corex)
     try:
         import torch
-        import torch_corex
+        import torch_corex  # noqa: F401  # side-effect import registers backend
         if hasattr(torch, 'corex') and torch.corex.is_available():
             return "corex", torch
     except ImportError:
@@ -103,7 +103,8 @@ def validate_gpu():
             import torch_npu
             device_type = "npu"
             get_device_count = torch_npu.npu.device_count
-            get_device_name = lambda i: f"Ascend NPU {i}"
+            def get_device_name(i):
+                return f"Ascend NPU {i}"
             synchronize = torch_npu.npu.synchronize
         elif backend == "musa":
             import torch_musa

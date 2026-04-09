@@ -5,7 +5,6 @@ Finds the most appropriate data disk mount point for container volumes.
 """
 
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path

@@ -28,7 +28,6 @@ jobs:
           exit_code=$?
           cat validation-output.txt
 
-          # Write result to Job Summary (visible in PR checks tab)
           if [ "$exit_code" -eq 0 ]; then
             echo "## ✅ Skill Validation: All checks passed" >> "$GITHUB_STEP_SUMMARY"
           else
@@ -41,15 +40,52 @@ jobs:
 
           exit $exit_code
 
-  # ── Add future check jobs below ──────────────────────────
-  # Example:
-  #
-  # lint-markdown:
-  #   name: Lint Markdown
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - name: Run markdownlint
-  #       uses: DavidAnson/markdownlint-cli2-action@v19
-  #       with:
-  #         globs: "skills/**/*.md"
+  lint-markdown:
+    name: Lint Markdown
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run markdownlint
+        uses: DavidAnson/markdownlint-cli2-action@v19
+        with:
+          globs: |
+            **/*.md
+            !node_modules/**
+            !skills/kernelgen-flagos/kernelgen-optimize-for-flaggems.md
+            !skills/kernelgen-flagos/kernelgen-optimize-for-vllm.md
+            !skills/kernelgen-flagos/kernelgen-specialize-for-flaggems.md
+
+  lint-python:
+    name: Lint Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install tools
+        run: pip install ruff
+
+      - name: Ruff check
+        run: ruff check .
+
+      - name: Ruff format check
+        continue-on-error: true
+        run: |
+          ruff format --check . || echo "::warning::Some files need formatting. Run 'ruff format .' locally."
+
+  lint-shell:
+    name: Lint Shell Scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@2.0.0
+        with:
+          scandir: ./skills
+          severity: error

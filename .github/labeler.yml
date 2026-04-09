@@ -1,0 +1,63 @@
+# Label PRs based on changed file paths
+# See: https://github.com/actions/labeler
+
+# ── Per-skill labels ──
+"skill: kernelgen":
+  - changed-files:
+      - any-glob-to-any-file: "skills/kernelgen-flagos/**"
+
+"skill: model-migrate":
+  - changed-files:
+      - any-glob-to-any-file: "skills/model-migrate-flagos/**"
+
+"skill: install-stack":
+  - changed-files:
+      - any-glob-to-any-file: "skills/install-stack-flagos/**"
+
+"skill: gpu-container":
+  - changed-files:
+      - any-glob-to-any-file: "skills/gpu-container-setup-flagos/**"
+
+"skill: model-verify":
+  - changed-files:
+      - any-glob-to-any-file: "skills/model-verify-flagos/**"
+
+"skill: perf-test":
+  - changed-files:
+      - any-glob-to-any-file: "skills/perf-test-flagos/**"
+
+"skill: flagrelease":
+  - changed-files:
+      - any-glob-to-any-file: "skills/flagrelease-entrance-flagos/**"
+
+"skill: vllm-plugin":
+  - changed-files:
+      - any-glob-to-any-file: "skills/vllm-plugin-fl-setup-flagos/**"
+
+"skill: skill-creator":
+  - changed-files:
+      - any-glob-to-any-file: "skills/skill-creator-flagos/**"
+
+"skill: tle-developer":
+  - changed-files:
+      - any-glob-to-any-file: "skills/tle-developer-flagos/**"
+
+# ── Category labels ──
+"area: ci":
+  - changed-files:
+      - any-glob-to-any-file: ".github/**"
+
+"area: docs":
+  - changed-files:
+      - any-glob-to-any-file:
+          - "*.md"
+          - "docs/**"
+          - "spec/**"
+
+"area: scripts":
+  - changed-files:
+      - any-glob-to-any-file: "scripts/**"
+
+"area: template":
+  - changed-files:
+      - any-glob-to-any-file: "template/**"

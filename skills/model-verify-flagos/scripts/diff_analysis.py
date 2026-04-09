@@ -14,7 +14,6 @@ import argparse
 import json
 import sys
 
-
 MULTICHIP_ERROR_PATTERNS = [
     ("FlagGems", ["flag_gems", "FlagGems", "flaggems"]),
     ("FlagTree", ["triton", "Triton", "compilation error", "flagtree"]),
