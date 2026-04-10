@@ -27,13 +27,13 @@ Perform all of the following steps except for obtaining the KernelGen Token in y
 2. In your agent client, send a prompt to connect to the KernelGen Operator Development MCP Toolkit, for example:
 
    ```{code-block} shell
-   Connect to MCP, its URL is https://kernelgen.flagos.io/sse and token is <your KernelGen Token>.
+   Based on the Claude Code configuration documentation: https://code.claude.com/docs/en/mcp, connect to the MCP. The MCP URL is https://kernelgen.flagos.io/sse, and the token is <your KernelGen Token>. Configure this in the claude.json file.
    ```
 
    or
 
    ```{code-block} shell
-   Please configure the kernelgen MCP with the URL https://kernelgen.flagos.io/sse and the token is <your KernelGen Token>.
+   Based on the VSCode documentation: https://code.visualstudio.com/docs/copilot/customization/mcp-servers, configure the kernelgen MCP. The MCP URL is https://kernelgen.flagos.io/sse, and the token is <your KernelGen Token>. Configure this in the mcp.json file.
    ```
 
    **Note**: You may need to restart your agent to let the settings take effect. Check this in the documentation of the relevant AI agent.
