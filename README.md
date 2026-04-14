@@ -178,8 +178,9 @@ Your agent automatically loads the corresponding `SKILL.md` instructions and hel
 ## Repository Structure
 
 ```none
-├── .claude-plugin/          # Claude Code plugin manifest
-│   └── marketplace.json
+├── .claude-plugin/          # Claude Code plugin manifest & marketplace
+│   ├── marketplace.json
+│   └── plugin.json
 ├── .cursor-plugin/          # Cursor plugin manifest
 │   ├── marketplace.json
 │   └── plugin.json

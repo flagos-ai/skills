@@ -1,1 +1,17 @@
-{"name": "flagos-skills", "skills": "skills", "description": "Agent skills for the FlagOS multi-chip AI inference platform. Includes model migration, environment verification, vendor onboarding, and more.", "version": "1.1.0", "author": {"name": "FlagOS AI"}, "homepage": "https://github.com/flagos-ai/skills", "repository": "https://github.com/flagos-ai/skills", "license": "Apache-2.0", "keywords": ["flagos", "multi-chip", "vllm", "model-migration", "inference", "gpu", "npu", "deployment"]}
+{
+  "name": "flagos-skills",
+  "owner": {
+    "name": "FlagOS AI"
+  },
+  "metadata": {
+    "description": "Agent skills for the FlagOS multi-chip AI inference platform.",
+    "version": "1.1.0"
+  },
+  "plugins": [
+    {
+      "name": "flagos-skills",
+      "source": "./",
+      "description": "Agent skills for the FlagOS multi-chip AI inference platform. Includes model migration, environment verification, vendor onboarding, and more."
+    }
+  ]
+}
