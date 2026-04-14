@@ -1,6 +1,6 @@
 {
   "name": "flagos-skills",
-  "description": "Agent skills for the FlagOS multi-chip AI inference platform. Includes model migration, environment verification, vendor onboarding, and more.",
+  "description": "Agent skills for the FlagOS multi-chip AI inference platform. Includes kernel generation and optimization, model migration, environment verification, vendor onboarding, and more.",
   "version": "1.1.0",
   "author": {
     "name": "FlagOS AI"
@@ -13,6 +13,8 @@
     "multi-chip",
     "vllm",
     "model-migration",
+    "kernel-generation",
+    "triton",
     "inference",
     "gpu",
     "npu",
