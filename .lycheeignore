@@ -1,0 +1,13 @@
+# Ignore patterns for lychee link checker
+# One regex per line — see https://github.com/lycheeverse/lychee
+
+localhost
+127\.0\.0\.1
+example\.com
+your-
+\$\{
+<.*>
+
+# Internal / geo-restricted hosts unreachable from GitHub Actions
+harbor\.baai\.ac\.cn
+ascendhub\.huawei\.com
