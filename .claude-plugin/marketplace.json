@@ -1,7 +1,7 @@
 {
   "name": "flagos-skills",
   "owner": {
-    "name": "FlagOS AI"
+    "name": "FlagOS Contributors"
   },
   "metadata": {
     "description": "Agent skills for the FlagOS multi-chip AI inference platform.",
