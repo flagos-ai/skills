@@ -8,7 +8,6 @@ import importlib
 import json
 import subprocess
 import sys
-import traceback
 
 
 def check_import(module_name):
@@ -75,7 +74,6 @@ def check_flagcx():
 def check_vllm_plugin_fl():
     result = {"importable": False, "registered": False}
     try:
-        import vllm_fl
         result["importable"] = True
 
         from importlib.metadata import entry_points

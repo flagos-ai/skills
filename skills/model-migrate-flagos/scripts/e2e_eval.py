@@ -27,8 +27,8 @@ import json
 import os
 import sys
 import time
-import urllib.request
 import urllib.error
+import urllib.request
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_PROMPTS = os.path.join(SCRIPT_DIR, "e2e_test_prompts.json")
@@ -331,7 +331,7 @@ def main():
     results_dir = cfg["shared_storage"]["results_dir"]
 
     print("=" * 50)
-    print(f"  E2E Correctness Verification")
+    print("  E2E Correctness Verification")
     print(f"  Model: {args.model}")
     print(f"  Mode: {args.mode} ({len(prompts)} prompts)")
     print(f"  Token match threshold: first {eval_cfg['token_match_count']} tokens")

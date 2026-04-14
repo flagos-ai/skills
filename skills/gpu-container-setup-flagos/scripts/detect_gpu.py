@@ -5,7 +5,6 @@ Detects GPU vendor and device information for multi-vendor container setup.
 """
 
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path

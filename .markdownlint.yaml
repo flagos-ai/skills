@@ -1,0 +1,48 @@
+# markdownlint configuration for FlagOS Skills
+# Relaxed config — catch real issues, ignore stylistic noise.
+# https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+# --- Disabled rules ---
+
+MD003: false   # heading style (ATX vs setext)
+MD004: false   # unordered list style
+MD005: false   # inconsistent list indentation
+MD007: false   # unordered list indent
+MD009: false   # trailing spaces
+MD010: false   # hard tabs
+MD012: false   # multiple consecutive blank lines
+MD013: false   # line length
+MD022: false   # blanks around headings
+MD024:         # duplicate headings
+  siblings_only: true
+MD025: false   # single title/h1
+MD026: false   # trailing punctuation in headings
+MD027: false   # multiple spaces after blockquote
+MD029: false   # ordered list prefix
+MD030: false   # spaces after list markers
+MD031: false   # blanks around fences
+MD032: false   # blanks around lists
+MD033: false   # inline HTML
+MD034: false   # bare URLs
+MD036: false   # emphasis used instead of heading
+MD040: false   # fenced code language
+MD041: false   # first line heading
+MD046: false   # code block style
+MD047: false   # single trailing newline
+MD049: false   # emphasis style
+MD050: false   # strong style
+MD058: false   # blanks around tables
+MD060: false   # table column style
+
+# --- Enabled rules (real bugs) ---
+# MD001: heading increment — catches h1 → h3 skips
+# MD011: reversed link syntax — catches (text)[url]
+# MD018: no space after hash — catches #heading
+# MD019: multiple spaces after hash
+# MD023: headings must start at beginning of line
+# MD037: spaces inside emphasis markers
+# MD038: spaces inside code span elements
+# MD039: spaces inside link text
+# MD042: no empty links
+# MD045: images should have alt text
+# MD051: link fragments should be valid

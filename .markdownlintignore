@@ -1,0 +1,4 @@
+# Ignore files with unconventional markdown formatting
+skills/kernelgen-flagos/kernelgen-optimize-for-flaggems.md
+skills/kernelgen-flagos/kernelgen-optimize-for-vllm.md
+skills/kernelgen-flagos/kernelgen-specialize-for-flaggems.md

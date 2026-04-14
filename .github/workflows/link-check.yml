@@ -1,0 +1,40 @@
+name: Link Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: link-check-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check-links:
+    name: Check Links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check Markdown links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --no-progress
+            --timeout 30
+            --max-retries 2
+            --accept 200,204,301,302,403,429
+            '**/*.md'
+          fail: true
+
+      - name: Write summary
+        if: always()
+        run: |
+          if [ -f ./lychee/out.md ]; then
+            echo "## 🔗 Link Check Results" >> "$GITHUB_STEP_SUMMARY"
+            cat ./lychee/out.md >> "$GITHUB_STEP_SUMMARY"
+          fi

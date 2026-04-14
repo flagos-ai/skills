@@ -1,0 +1,34 @@
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "E501",   # line too long (handled by line-length above)
+    "E701",   # multiple statements on one line (compact if-return is readable)
+    "E731",   # lambda assignment (existing code pattern)
+    "F401",   # unused imports (some are side-effect imports like torch_corex)
+    "F541",   # f-string without placeholders (existing code, cosmetic)
+    "I001",   # import sort order (existing code, cosmetic)
+    "B905",   # zip() without strict= (not available in py39)
+    "B007",   # loop control variable not used (intentional destructuring)
+    "SIM102", # nested if → single if (often less readable)
+    "SIM103", # return condition directly (less explicit)
+    "SIM108", # ternary operator (readability trade-off)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["flagos"]
+
+[tool.pytest.ini_options]
+testpaths = ["scripts", "skills"]
+python_files = ["test_*.py", "*_test.py"]

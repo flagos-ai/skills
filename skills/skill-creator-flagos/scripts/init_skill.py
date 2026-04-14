@@ -214,9 +214,9 @@ def main() -> int:
         print(f"Created: {skill_dir}/{resource}/")
 
     print(f"\nSkill '{name}' initialized successfully!")
-    print(f"Next steps:")
+    print("Next steps:")
     print(f"  1. Edit {skill_dir}/SKILL.md — fill in the [TODO] sections")
-    print(f"  2. Add supporting files to scripts/, references/, assets/ as needed")
+    print("  2. Add supporting files to scripts/, references/, assets/ as needed")
     print(f"  3. Run: python3 validate_skill.py {skill_dir}")
     return 0
 

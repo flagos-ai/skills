@@ -129,7 +129,7 @@ def check_registration(init_file, model_file, config_file):
 
     # Find ModelRegistry.register_model calls in init
     model_basename = Path(model_file).stem
-    reg_pattern = rf'register_model\(\s*"(\w+)"'
+    reg_pattern = r'register_model\(\s*"(\w+)"'
     for m in re.finditer(reg_pattern, init_src):
         class_name = m.group(1)
         if model_classes and class_name not in model_classes:
