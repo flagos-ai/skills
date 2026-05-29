@@ -194,10 +194,9 @@ def post_review(repo: str, pr: int, operator: str | None, findings: list[dict[st
         return
 
     # Post via gh api using temp file for input
-    tmp_file = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False)
-    json.dump(review_payload, tmp_file)
-    tmp_file.close()
-    tmp_path = tmp_file.name
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as tmp_file:
+        json.dump(review_payload, tmp_file)
+        tmp_path = tmp_file.name
 
     try:
         result = run_gh(["api", f"repos/{repo}/pulls/{pr}/reviews",

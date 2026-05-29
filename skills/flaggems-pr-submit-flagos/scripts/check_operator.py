@@ -128,7 +128,7 @@ class OperatorChecker:
 
         ok(f"文件存在: {self.kernel_path}")
 
-        with open(self.kernel_path, "r") as f:
+        with open(self.kernel_path) as f:
             content = f.read()
 
         # KernelGen 首行注释检查
@@ -227,7 +227,7 @@ class OperatorChecker:
             fail("文件不存在")
             return
 
-        with open(self.ops_init_path, "r") as f:
+        with open(self.ops_init_path) as f:
             content = f.read()
 
         import_pattern = rf"from flag_gems\.ops\.{re.escape(self.op_name)} import"
@@ -276,7 +276,7 @@ class OperatorChecker:
             fail("文件不存在")
             return
 
-        with open(self.top_init_path, "r") as f:
+        with open(self.top_init_path) as f:
             content = f.read()
 
         config_match = re.search(r"_FULL_CONFIG\s*=\s*\((.+?)\)\s*\n\n", content, re.DOTALL)
@@ -340,7 +340,7 @@ class OperatorChecker:
             fail("文件不存在")
             return
 
-        with open(self.yaml_path, "r") as f:
+        with open(self.yaml_path) as f:
             try:
                 data = yaml.safe_load(f)
             except yaml.YAMLError as e:
@@ -439,7 +439,7 @@ class OperatorChecker:
 
         ok(f"文件存在: tests/test_{self.op_name}.py")
 
-        with open(self.test_path, "r") as f:
+        with open(self.test_path) as f:
             content = f.read()
 
         # pytest mark 检查（使用去掉下划线的 op_id）
@@ -539,7 +539,7 @@ class OperatorChecker:
 
         ok(f"文件存在: benchmark/test_{self.op_id}.py")
 
-        with open(self.bench_path, "r") as f:
+        with open(self.bench_path) as f:
             content = f.read()
 
         # pytest mark 检查（使用去掉下划线的 op_id）
@@ -711,7 +711,7 @@ class OperatorChecker:
         for filepath in [self.kernel_path, self.test_path, self.bench_path]:
             if not os.path.isfile(filepath):
                 continue
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 content = f.read()
             if not content.endswith("\n"):
                 relpath = os.path.relpath(filepath, self.repo_dir)
@@ -721,7 +721,7 @@ class OperatorChecker:
         for filepath in [self.kernel_path, self.test_path, self.bench_path]:
             if not os.path.isfile(filepath):
                 continue
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 lines = f.readlines()
             for i, line in enumerate(lines, 1):
                 if line.rstrip() != line.rstrip("\n").rstrip():
@@ -733,7 +733,7 @@ class OperatorChecker:
         for filepath in [self.kernel_path, self.test_path, self.bench_path]:
             if not os.path.isfile(filepath):
                 continue
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 lines = f.readlines()
             for i, line in enumerate(lines, 1):
                 if len(line.rstrip("\n")) > 120:
@@ -786,7 +786,7 @@ class OperatorChecker:
         for filepath, label in [(self.test_path, "测试文件"), (self.bench_path, "benchmark")]:
             if not os.path.isfile(filepath):
                 continue
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 content = f.read()
 
             marks = set(re.findall(r"@pytest\.mark\.(\w+)", content))
@@ -817,7 +817,7 @@ class OperatorChecker:
         # 提取 yaml for 列表
         yaml_for = set()
         if os.path.isfile(self.yaml_path):
-            with open(self.yaml_path, "r") as f:
+            with open(self.yaml_path) as f:
                 try:
                     data = yaml.safe_load(f)
                 except yaml.YAMLError:
@@ -835,7 +835,7 @@ class OperatorChecker:
         # 提取 _FULL_CONFIG 中该算子的注册 aten name
         config_aten = set()
         if os.path.isfile(self.top_init_path):
-            with open(self.top_init_path, "r") as f:
+            with open(self.top_init_path) as f:
                 init_content = f.read()
             config_match = re.search(
                 r"_FULL_CONFIG\s*=\s*\((.+?)\)\s*(?:\n\n|$)", init_content, re.DOTALL
@@ -858,8 +858,8 @@ class OperatorChecker:
 
         # 比较
         # yaml for 中的名字用于 aten dispatch，config 中也是 aten name
-        yaml_base = {name.split(".")[0] for name in yaml_for}
-        config_base = {name.split(".")[0] for name in config_aten}
+        {name.split(".")[0] for name in yaml_for}
+        {name.split(".")[0] for name in config_aten}
 
         yaml_only = yaml_for - config_aten
         config_only = config_aten - yaml_for
@@ -880,7 +880,7 @@ class OperatorChecker:
             warn("kernel 文件不存在，跳过")
             return
 
-        with open(self.kernel_path, "r") as f:
+        with open(self.kernel_path) as f:
             content = f.read()
 
         # 收集该算子可能的 torch.xxx 调用形式
@@ -927,7 +927,7 @@ class OperatorChecker:
             anti_hack = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(anti_hack)
 
-            with open(self.kernel_path, "r") as f:
+            with open(self.kernel_path) as f:
                 code = f.read()
 
             is_hack, reason = anti_hack.check_code(code, backend="torch")
@@ -1056,7 +1056,7 @@ class OperatorChecker:
         if not os.path.isfile(self.kernel_path):
             return
 
-        with open(self.kernel_path, "r") as f:
+        with open(self.kernel_path) as f:
             content = f.read()
 
         # 匹配 @use_tl_extra 装饰的函数（可能跟 @triton.jit 一起）
@@ -1101,7 +1101,7 @@ class OperatorChecker:
         for filepath, label, pattern in checks:
             if not os.path.isfile(filepath):
                 continue
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 lines = f.readlines()
 
             for i, line in enumerate(lines):
@@ -1168,7 +1168,7 @@ class OperatorChecker:
         if not os.path.isfile(self.kernel_path):
             return
 
-        with open(self.kernel_path, "r") as f:
+        with open(self.kernel_path) as f:
             content = f.read()
 
         alias_pattern = re.compile(
@@ -1196,7 +1196,7 @@ class OperatorChecker:
         if not os.path.isfile(self.test_path):
             return
 
-        with open(self.test_path, "r") as f:
+        with open(self.test_path) as f:
             content = f.read()
 
         has_nan_input = bool(re.search(
@@ -1226,16 +1226,16 @@ class OperatorChecker:
         pr_kernel = self.kernel_path
 
         if os.path.isfile(wt_kernel) and os.path.isfile(pr_kernel):
-            with open(wt_kernel, "r") as f:
+            with open(wt_kernel) as f:
                 wt_content = f.read()
-            with open(pr_kernel, "r") as f:
+            with open(pr_kernel) as f:
                 pr_content = f.read()
 
-            wt_lines = [l.strip() for l in wt_content.strip().splitlines() if l.strip()]
-            pr_lines = [l.strip() for l in pr_content.strip().splitlines() if l.strip()]
+            [line.strip() for line in wt_content.strip().splitlines() if line.strip()]
+            [line.strip() for line in pr_content.strip().splitlines() if line.strip()]
 
-            wt_comments = [l for l in wt_content.splitlines() if l.strip().startswith("#")]
-            pr_comments = [l for l in pr_content.splitlines() if l.strip().startswith("#")]
+            wt_comments = [line for line in wt_content.splitlines() if line.strip().startswith("#")]
+            pr_comments = [line for line in pr_content.splitlines() if line.strip().startswith("#")]
 
             if len(pr_comments) < len(wt_comments) - 2:
                 self.warnings.append(
@@ -1264,13 +1264,13 @@ class OperatorChecker:
         if not os.path.isfile(self.kernel_path):
             return
 
-        with open(self.kernel_path, "r") as f:
+        with open(self.kernel_path) as f:
             content = f.read()
 
         if not os.path.isfile(self.test_path):
             return
 
-        with open(self.test_path, "r") as f:
+        with open(self.test_path) as f:
             test_content = f.read()
 
         uses_limited_dtype = bool(re.search(
@@ -1305,7 +1305,7 @@ class OperatorChecker:
         for filepath, label in [(self.test_path, "测试文件"), (self.bench_path, "benchmark")]:
             if not os.path.isfile(filepath):
                 continue
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 content = f.read()
             if out_func in content or f"{base_name}_out" in content:
                 ok(f"{label}覆盖了 _out 变体: {out_func}")

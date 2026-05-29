@@ -60,7 +60,7 @@ def find_related_yaml_ids(yaml_path, op_name, op_id):
         return {}
 
     try:
-        with open(yaml_path, "r") as f:
+        with open(yaml_path) as f:
             data = yaml.safe_load(f)
     except yaml.YAMLError as e:
         fail(f"YAML 解析失败: {e}")
@@ -95,7 +95,7 @@ def extract_func_info(file_path):
         return []
 
     try:
-        with open(file_path, "r") as f:
+        with open(file_path) as f:
             content = f.read()
     except OSError:
         return []

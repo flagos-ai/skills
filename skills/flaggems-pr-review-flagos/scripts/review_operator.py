@@ -91,7 +91,7 @@ def parse_added_lines(patch: str) -> list[tuple[int, str]]:
     return lines
 
 
-def safe_ast_parse(content: str, filename: str = "<unknown>") -> Optional[ast.Module]:
+def safe_ast_parse(content: str, filename: str = "<unknown>") -> ast.Module | None:
     """Try to parse Python source; return None on failure."""
     try:
         return ast.parse(content, filename=filename)
@@ -103,7 +103,7 @@ def safe_ast_parse(content: str, filename: str = "<unknown>") -> Optional[ast.Mo
 # Check functions
 # ---------------------------------------------------------------------------
 
-def check_kernel(file_info: dict, operator: Optional[str]) -> list[Finding]:
+def check_kernel(file_info: dict, operator: str | None) -> list[Finding]:
     """Checks for kernel files: src/flag_gems/ops/<op>.py"""
     findings: list[Finding] = []
     path = file_info["path"]
@@ -143,9 +143,7 @@ def check_kernel(file_info: dict, operator: Optional[str]) -> list[Finding]:
         names_seen: dict[str, int] = {}
         for node in ast.iter_child_nodes(tree):
             name = None
-            if isinstance(node, ast.FunctionDef) or isinstance(node, ast.AsyncFunctionDef):
-                name = node.name
-            elif isinstance(node, ast.ClassDef):
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                 name = node.name
             if name:
                 if name in names_seen:
@@ -254,7 +252,7 @@ def check_kernel(file_info: dict, operator: Optional[str]) -> list[Finding]:
     return findings
 
 
-def check_ops_init(file_info: dict, operator: Optional[str]) -> list[Finding]:
+def check_ops_init(file_info: dict, operator: str | None) -> list[Finding]:
     """Checks for src/flag_gems/ops/__init__.py."""
     findings: list[Finding] = []
     path = file_info["path"]
@@ -312,7 +310,7 @@ def check_ops_init(file_info: dict, operator: Optional[str]) -> list[Finding]:
     return findings
 
 
-def check_full_config(file_info: dict, operator: Optional[str], kernel_content: str = "") -> list[Finding]:
+def check_full_config(file_info: dict, operator: str | None, kernel_content: str = "") -> list[Finding]:
     """Checks for __init__.py containing _FULL_CONFIG."""
     findings: list[Finding] = []
     path = file_info["path"]
@@ -379,7 +377,7 @@ def check_full_config(file_info: dict, operator: Optional[str], kernel_content: 
     return findings
 
 
-def check_yaml(file_info: dict, operator: Optional[str]) -> list[Finding]:
+def check_yaml(file_info: dict, operator: str | None) -> list[Finding]:
     """Checks for operators.yaml."""
     findings: list[Finding] = []
     path = file_info["path"]
@@ -458,7 +456,7 @@ def check_yaml(file_info: dict, operator: Optional[str]) -> list[Finding]:
     return findings
 
 
-def check_test(file_info: dict, operator: Optional[str]) -> list[Finding]:
+def check_test(file_info: dict, operator: str | None) -> list[Finding]:
     """Checks for test files: tests/test_<op>.py"""
     findings: list[Finding] = []
     path = file_info["path"]
@@ -509,10 +507,9 @@ def check_test(file_info: dict, operator: Optional[str]) -> list[Finding]:
     bad_import_re = re.compile(r"^\s*import\s+accuracy_utils")
     bad_from_re = re.compile(r"^\s*from\s+flag_gems")
     good_import_re = re.compile(r"^\s*from\s+\.\s+import\s+accuracy_utils")
-    has_good_import = False
     for i, line in enumerate(content.splitlines(), 1):
         if good_import_re.match(line):
-            has_good_import = True
+            pass
         if bad_import_re.match(line):
             findings.append(Finding(
                 severity="error",
@@ -585,7 +582,7 @@ def check_test(file_info: dict, operator: Optional[str]) -> list[Finding]:
     return findings
 
 
-def check_benchmark(file_info: dict, operator: Optional[str]) -> list[Finding]:
+def check_benchmark(file_info: dict, operator: str | None) -> list[Finding]:
     """Checks for benchmark files: benchmark/test_<op>.py"""
     findings: list[Finding] = []
     path = file_info["path"]
@@ -682,7 +679,7 @@ def check_benchmark(file_info: dict, operator: Optional[str]) -> list[Finding]:
     return findings
 
 
-def check_cross_file(files: list[dict], commits: list[str], operator: Optional[str]) -> list[Finding]:
+def check_cross_file(files: list[dict], commits: list[str], operator: str | None) -> list[Finding]:
     """Cross-file checks."""
     findings: list[Finding] = []
 
@@ -746,7 +743,7 @@ def check_cross_file(files: list[dict], commits: list[str], operator: Optional[s
 
 
 def check_yaml_consistency(
-    files: list[dict], operator: Optional[str]
+    files: list[dict], operator: str | None
 ) -> list[Finding]:
     """REG_CONSISTENCY: check yaml `for` list entries match _FULL_CONFIG entries."""
     findings: list[Finding] = []
@@ -756,7 +753,6 @@ def check_yaml_consistency(
     yaml_content = ""
     config_content = ""
     yaml_path = ""
-    config_path = ""
 
     for f in files:
         if "operators.yaml" in f["path"]:
@@ -764,7 +760,7 @@ def check_yaml_consistency(
             yaml_path = f["path"]
         if "__init__.py" in f["path"] and "_FULL_CONFIG" in f.get("content", ""):
             config_content = f.get("content", "")
-            config_path = f["path"]
+            f["path"]
 
     if not yaml_content or not config_content:
         return findings

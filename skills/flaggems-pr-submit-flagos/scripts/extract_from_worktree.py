@@ -673,7 +673,7 @@ def insert_full_config(op, worktree, repo, dry_run):
             if match:
                 aten_name, func_name = match.groups()
                 base_name = aten_name.split(".")[0].lstrip("_")
-                if base_name == op or base_name == op_id or func_name == op or func_name == op_id:
+                if func_name in (op, op_id) or base_name in (op, op_id):
                     config_entries.append(line_stripped.rstrip(",") + ",")
 
     if not config_entries:
@@ -765,7 +765,7 @@ def insert_operators_yaml(op, worktree, repo, dry_run):
             wt_data = yaml.safe_load(f)
         for wt_op in wt_data.get("ops", []):
             wt_name = wt_op.get("name", wt_op.get("id", ""))
-            if wt_name == op or wt_name == op_id:
+            if wt_name in (op, op_id):
                 entry = dict(wt_op)
                 if "name" in entry:
                     entry["id"] = op_id

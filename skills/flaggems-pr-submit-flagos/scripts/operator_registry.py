@@ -96,7 +96,7 @@ def backfill(op_name, pr_url):
     name_col = None
     path_col = None
     for i, h in enumerate(header):
-        if h and "算子名" == str(h).strip():
+        if h and str(h).strip() == "算子名":
             name_col = i
         if h and "代码路径" in str(h).strip():
             path_col = i
@@ -194,7 +194,7 @@ def main():
     p_pending = sub.add_parser("pending", help="列出待提交算子")
     p_pending.add_argument("--limit", type=int, default=None, help="限制输出数量")
 
-    p_submitted = sub.add_parser("submitted", help="列出已提交算子")
+    sub.add_parser("submitted", help="列出已提交算子")
 
     args = parser.parse_args()
 

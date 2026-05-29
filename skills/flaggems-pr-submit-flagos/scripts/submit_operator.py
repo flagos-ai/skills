@@ -389,7 +389,7 @@ def main():
     except (json.JSONDecodeError, AttributeError) as e:
         fatal(f"gen_pr_description.py 输出解析失败: {e}")
 
-    nv_rows = pr_data.get("nvidia_benchmark", {}).get("rows", [])
+    pr_data.get("nvidia_benchmark", {}).get("rows", [])
     nv_case_count = pr_data.get("nvidia_benchmark", {}).get("case_count", 0)
     am_speedup = pr_data.get("nvidia_benchmark", {}).get("arithmetic_mean_speedup", 0)
     ok(f"Nvidia: {nv_case_count} cases, mean speedup = {am_speedup:.3f}")

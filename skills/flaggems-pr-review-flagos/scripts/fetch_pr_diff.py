@@ -67,7 +67,7 @@ def run_cmd(cmd: list[str], *, check: bool = True) -> subprocess.CompletedProces
     return result
 
 
-def detect_operator(files: list[dict[str, str]]) -> Optional[str]:
+def detect_operator(files: list[dict[str, str]]) -> str | None:
     """Auto-detect operator name from changed file paths.
 
     Looks for patterns like src/flag_gems/ops/<name>.py where name is not __init__.
@@ -170,7 +170,7 @@ def fetch_pr_commits(owner: str, repo: str, pr_number: int) -> list[str]:
     return commits
 
 
-def handle_pr_mode(pr_number: int, repo_arg: Optional[str]) -> dict:
+def handle_pr_mode(pr_number: int, repo_arg: str | None) -> dict:
     """Handle PR mode: fetch diff data from GitHub."""
     if repo_arg:
         full_repo = repo_arg
@@ -246,7 +246,7 @@ def handle_local_mode(base: str) -> dict:
 
     # Parse patches per file from the unified diff
     patch_map: dict[str, str] = {}
-    current_file: Optional[str] = None
+    current_file: str | None = None
     current_patch_lines: list[str] = []
 
     for line in full_diff.splitlines(keepends=True):
