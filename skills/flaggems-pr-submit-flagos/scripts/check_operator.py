@@ -1004,7 +1004,7 @@ class OperatorChecker:
                     ok("anti-hack Layer 2 通过（kernel 确实依赖 Triton 计算）")
             except Exception as e:
                 # 如果调用失败（参数不匹配等），不阻塞
-                ok(f"Layer 2 跳过（调用异常: {type(e).__name__}，不影响提交）")
+                warn(f"Layer 2 跳过（调用异常: {type(e).__name__}: {e}）")
         except ImportError as e:
             warn(f"Layer 2 跳过（导入失败: {e}）")
         except Exception as e:
@@ -1035,7 +1035,10 @@ class OperatorChecker:
             ]
 
             if len(op_files) > 1:
-                other_ops = [f for f in op_files if self.op_name not in f]
+                other_ops = [
+                    f for f in op_files
+                    if f.rsplit("/", 1)[-1].replace(".py", "") != self.op_name
+                ]
                 if other_ops:
                     self.errors.append(
                         f"PR 包含多个算子文件: {op_files}。每个 PR 只能提交一个算子"
