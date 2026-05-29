@@ -162,8 +162,11 @@ def check_kernel(file_info: dict, operator: Optional[str]) -> list[Finding]:
 
     # KERNEL_NO_FALLBACK
     if operator:
-        pattern = re.compile(rf"torch\.{re.escape(operator)}\s*\(")
+        esc = re.escape(operator)
+        pattern = re.compile(rf"torch\.(?:Tensor\.)?{esc}_?\s*\(")
         for i, line in enumerate(content.splitlines(), 1):
+            if line.lstrip().startswith("#"):
+                continue
             if pattern.search(line):
                 findings.append(Finding(
                     severity="error",
