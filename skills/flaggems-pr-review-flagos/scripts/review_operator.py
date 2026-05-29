@@ -1018,7 +1018,12 @@ def main() -> None:
         if result.returncode != 0:
             print(f"Error fetching PR data: {result.stderr.strip()}", file=sys.stderr)
             sys.exit(1)
-        data = json.loads(result.stdout)
+        try:
+            data = json.loads(result.stdout)
+        except json.JSONDecodeError as e:
+            print(f"Error: fetch_pr_diff.py returned invalid JSON: {e}", file=sys.stderr)
+            print(f"stdout: {result.stdout[:500]}", file=sys.stderr)
+            sys.exit(1)
 
     # Run review
     findings = run_review(data, strict=args.strict)
