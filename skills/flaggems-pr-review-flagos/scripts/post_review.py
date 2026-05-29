@@ -71,7 +71,6 @@ def get_diff_position_map(repo: str, pr: int) -> dict[str, dict[int, int]]:
                     current_line = int(match.group(1)) - 1
                 else:
                     continue
-                position += 1
                 continue
             position += 1
             if raw_line.startswith("-"):
