@@ -21,10 +21,9 @@ from pathlib import Path
 from typing import Optional
 
 
-def verify_environment() -> None:
+def verify_environment(*, require_token: bool = True) -> None:
     """Verify required environment before proceeding."""
-    # Check GH_TOKEN (only for PR mode, but check early)
-    if not os.getenv("GH_TOKEN"):
+    if require_token and not os.getenv("GH_TOKEN"):
         print("ERROR: GH_TOKEN not set.", file=sys.stderr)
         print("Please run: gh auth login", file=sys.stderr)
         print("Or set: export GH_TOKEN=your_token", file=sys.stderr)
@@ -297,9 +296,6 @@ def handle_local_mode(base: str) -> dict:
 
 
 def main() -> None:
-    # Verify environment first
-    verify_environment()
-
     parser = argparse.ArgumentParser(
         description="Fetch PR diff data for FlagGems PR review.",
     )
@@ -328,6 +324,8 @@ def main() -> None:
     )
 
     args = parser.parse_args()
+
+    verify_environment(require_token=not args.local)
 
     if args.local:
         output = handle_local_mode(args.base)
