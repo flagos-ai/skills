@@ -1,0 +1,152 @@
+# Manual/Judgment Review Rules
+
+These rules require domain knowledge and cannot be fully automated. Apply them when reviewing FlagGems PRs that add or modify operators.
+
+---
+
+## Rule 1: Benchmark Class Selection
+
+### What to check
+Whether the chosen benchmark base class matches the computational pattern of the operator.
+
+### How to judge
+
+| Operator pattern | Correct benchmark class |
+|-----------------|------------------------|
+| Elementwise unary (sin, exp, relu) | `UnaryPointwiseBenchmark` |
+| Elementwise binary (add, mul, pow) | `BinaryPointwiseBenchmark` |
+| Reduction (sum, max, mean, norm) | `UnaryReductionBenchmark` |
+| BLAS/matmul (mm, bmm, addmm, linear) | `BlasBenchmark` |
+| Custom input shapes or non-standard signatures | `GenericBenchmark` with `input_fn` |
+
+### Example scenarios
+- PR adds benchmark for `abs` using `GenericBenchmark` with a custom `input_fn` that just generates a single tensor -> Should use `UnaryPointwiseBenchmark`. Flag it.
+- PR adds benchmark for `layer_norm` using `UnaryPointwiseBenchmark` -> `layer_norm` has additional parameters (weight, bias, normalized_shape) so `GenericBenchmark` with `input_fn` is appropriate. Flag the wrong class.
+- PR adds benchmark for `cumsum` using `UnaryReductionBenchmark` -> cumsum is a scan, not a reduction, but `UnaryReductionBenchmark` is acceptable since it shares the same input pattern (single tensor + dim). OK.
+
+### What to flag
+- Pointwise op not using the matching Pointwise benchmark class.
+- Reduction op not using `UnaryReductionBenchmark`.
+- BLAS op not using `BlasBenchmark`.
+- Op with non-standard inputs using a standard class instead of `GenericBenchmark` with `input_fn`.
+
+---
+
+## Rule 2: Dead Branch Cleanup
+
+### What to check
+Whether the kernel wrapper contains redundant type-dispatch logic when the underlying Triton kernel already uses `pointwise_dynamic` (or `libentry` with `tl.constexpr` type handling).
+
+### How to judge
+`pointwise_dynamic` automatically handles dtype promotion and dispatch. If the wrapper function still contains:
+- `if input.dtype == torch.float16: ...`
+- `isinstance` checks on dtype
+- Manual `.to()` casts before calling the kernel
+- Conditional branching based on dtype that duplicates what `pointwise_dynamic` already does
+
+...then those branches are dead code.
+
+### Example scenarios
+- Kernel uses `@pointwise_dynamic(is_tensor=[True], promotion_methods=[(0, "DEFAULT")])` but the wrapper does `if x.is_floating_point(): x = x.to(torch.float32)` before calling it -> Dead branch. Flag it.
+- Kernel uses raw `@triton.jit` and the wrapper manually casts inputs to a compute dtype -> This is intentional manual dispatch. OK.
+- Kernel uses `pointwise_dynamic` and wrapper has a branch `if not input.is_contiguous(): input = input.contiguous()` -> This is a layout concern, not type dispatch. OK.
+
+### What to flag
+- Redundant dtype checks/casts in wrappers around `pointwise_dynamic` kernels.
+- Suggest removing the dead branches since `pointwise_dynamic` handles dispatch.
+
+---
+
+## Rule 3: No Modification of Existing Tests
+
+### What to check
+When a PR adds a NEW operator, verify it does NOT modify existing test functions for other operators.
+
+### How to judge
+- The PR should add new `test_accuracy_<op>` and `test_dtype_<op>` functions.
+- It should NOT change the body or signature of any pre-existing `test_accuracy_*` or `test_dtype_*` function.
+- Acceptable modifications to test files: adding imports, adding new fixture parameters that don't affect existing tests, adding the new test functions at the end.
+- Unacceptable: changing shapes/tolerances/logic in another operator's test, refactoring shared utilities in a way that affects existing tests.
+
+### Example scenarios
+- PR adds `softmax` operator. Test file adds `test_accuracy_softmax` at the bottom. Also modifies `test_accuracy_log_softmax` to "reuse" a helper -> Flag the modification to `test_accuracy_log_softmax`.
+- PR adds `add` operator. Changes the `POINTWISE_SHAPES` fixture to add more shapes -> This affects ALL pointwise tests. Flag it unless there is a clear justification and all affected tests are verified.
+- PR adds `silu` operator. Only adds new functions and a new import. No existing functions touched -> OK.
+
+### What to flag
+- Any diff hunk that modifies the body of a pre-existing `test_*` function.
+- Changes to shared test fixtures/parameters that broaden scope beyond the new op.
+- Suggest splitting such changes into a separate PR.
+
+---
+
+## Rule 4: Probabilistic Operator Validation
+
+### What to check
+For stochastic/probabilistic operators (dropout, bernoulli, rand, rand_like, normal, multinomial, etc.), whether the test uses statistical verification rather than exact element comparison.
+
+### How to judge
+Correct testing approaches for probabilistic ops:
+- Check that the mean of the output approximates the expected value (e.g., `mean approx p` for bernoulli).
+- Check that the variance is within expected bounds.
+- Use a large sample size to reduce flakiness.
+- For dropout: verify that ~p fraction of elements are zero AND non-zero elements are scaled by `1/(1-p)`.
+- Use tolerances appropriate for statistical tests (e.g., `atol=0.05` for checking a probability).
+
+Incorrect approaches:
+- `torch.allclose(result, reference)` on stochastic outputs.
+- `gems_assert_close(result, reference)` on stochastic outputs.
+- Seeding both implementations and comparing element-wise (fragile, implementation-dependent).
+
+### Example scenarios
+- PR adds `test_accuracy_dropout` that calls `gems_assert_close(res, ref)` -> The outputs are random; they won't match. Flag it.
+- PR adds `test_accuracy_bernoulli` that checks `assert abs(result.float().mean() - p) < 0.05` and `assert (result == 0) | (result == 1)` -> Correct statistical test. OK.
+- PR adds `test_accuracy_rand_like` that seeds the generator and does exact comparison -> Fragile (different Triton RNG state). Flag it.
+
+### What to flag
+- Exact comparison (`gems_assert_close`, `torch.allclose`, `assertEqual`) on outputs of probabilistic ops.
+- Suggest replacing with statistical assertions (mean/variance checks with appropriate tolerances).
+
+---
+
+## Rule 5: General-before-Specialized
+
+### What to check
+If the PR submits a specialized variant of an operator (e.g., `foo_out`, `foo.Scalar`, `foo_`), check whether the general version (`foo`) has already been merged into the upstream/main branch.
+
+### How to judge
+- `foo_out` variants typically delegate to `foo` internally and just write into a pre-allocated output tensor.
+- Inplace `foo_` variants typically call `foo` and copy back.
+- Scalar overloads (`foo.Scalar`) are often specialized paths of the general tensor version.
+- If the general version is not yet merged, the specialized variant either:
+  - Duplicates the kernel logic (maintenance burden), or
+  - Will break without the base op.
+
+### Example scenarios
+- PR adds `cross_entropy_loss_out` but `cross_entropy_loss` is not in `__init__.py` or the ops directory -> Flag the dependency. The general version should land first.
+- PR adds `add_` (inplace add) and `add` is already in the codebase -> OK, the base op exists.
+- PR adds `norm.ScalarOpt_dim` but `norm` with full signature is already merged -> OK.
+- PR adds both `foo` and `foo_out` in the same PR -> OK, they ship together.
+
+### What to flag
+- Specialized variant submitted without the general version being present in the codebase.
+- Suggest either: (a) include the general version in the same PR, or (b) land the general version first.
+
+---
+
+## Rule 6: Fused operator directory placement
+
+### What to check
+Operators that fuse multiple ops (e.g., AddRMSNorm, FusedRoPE, FusedAdam) should be placed in `src/flag_gems/fused/` directory, NOT in `src/flag_gems/ops/`. Check if the operator name contains "Fused", "Add+Norm", or combines multiple ops.
+
+### How to judge
+Look at the operator name and implementation. If it combines 2+ ops into one kernel (e.g., add + rms_norm → AddRMSNorm), it belongs in `fused/`. Standard single-op kernels belong in `ops/`.
+
+### Example scenarios
+- PR adds `AddRMSNorm` in `src/flag_gems/ops/add_rms_norm.py` -> This fuses add and rms_norm into one kernel. It belongs in `fused/`. Flag it.
+- PR adds `FusedAdam` in `src/flag_gems/fused/fused_adam.py` -> Correctly placed in `fused/`. OK.
+- PR adds `relu` in `src/flag_gems/ops/relu.py` -> Single-op kernel, correct placement in `ops/`. OK.
+
+### What to flag
+- Fused operator placed in `ops/` instead of `fused/`.
+- Suggest moving the file to `src/flag_gems/fused/` and updating imports accordingly.
